@@ -11,13 +11,15 @@ import net.minecraft.world.entity.Entity;
 
 import javax.annotation.Nullable;
 
+import static com.github.heiwenziduo.fvlib.FvLib.fvResource;
+
 public class FvLibDamageType {
     /// Damage Type: <span style="color: f4f79e;">PURE</span>
     public static final ResourceKey<DamageType> PURE = create("pure");
 
     /** Creates a new damage type tag */
     private static ResourceKey<DamageType> create(String name) {
-        return ResourceKey.create(Registries.DAMAGE_TYPE, ResourceLocation.fromNamespaceAndPath(FvLib.ModId, name));
+        return ResourceKey.create(Registries.DAMAGE_TYPE, fvResource(name));
     }
 
     /** Creates a new damage source using a custom type */

@@ -1,8 +1,12 @@
 package com.github.heiwenziduo.fvlib.mixin;
 
+import com.github.heiwenziduo.fvlib.FvLib;
 import com.github.heiwenziduo.fvlib.api.manager.TimeLockManager;
 import com.github.heiwenziduo.fvlib.api.mixin.LivingEntityMixinAPI;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
@@ -61,16 +65,26 @@ public abstract class LivingEntityMixin extends Entity implements LivingEntityMi
     @Shadow
     public abstract void setHealth(float pAbsorptionAmount);
 
+
     @Unique
-    protected TimeLockManager TWS$timeLockManager = new TimeLockManager();
+    private static final EntityDataAccessor<Integer> DATA_TIME_LOCK = SynchedEntityData.defineId(LivingEntity.class, EntityDataSerializers.INT);
+
+    @Unique
+    protected TimeLockManager FvLib$timeLockManager = new TimeLockManager();
 
     @Unique
     @Override
-    public TimeLockManager TWS$getTimeLockManager() {
-        return TWS$timeLockManager;
+    public TimeLockManager FvLib$getTimeLockManager() {
+        return FvLib$timeLockManager;
     }
 
-    @Inject(method = "baseTick", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "defineSynchedData", at = @At("HEAD"))
+    public void defineSynchedData(CallbackInfo ci) {
+        entityData.define(DATA_TIME_LOCK, 0);
+    }
+
+
+    @Inject(method = "baseTick", at = @At("HEAD"))
     public void timeLockBaseTick(CallbackInfo ci) {
 
     }
@@ -78,75 +92,51 @@ public abstract class LivingEntityMixin extends Entity implements LivingEntityMi
     /// 被时间锁定的活物不能行动
     @Inject(method = "tick", at = @At("HEAD"), cancellable = true)
     public void timeLockTick(CallbackInfo ci) {
+        int timeLockSync;
+        if (!level().isClientSide) {
+            // 服务端发起同步
+            timeLockSync = FvLib$timeLockManager.getTimeLock();
+            entityData.set(DATA_TIME_LOCK, timeLockSync);
+        } else {
+            // 客户端接收同步的数据
+            timeLockSync = entityData.get(DATA_TIME_LOCK);
+            FvLib$timeLockManager.setTimeLock(timeLockSync);
+        }
+
         // 似乎也会插入所有子类的开头 ?
-        if (TWS$getTimeLockManager().isTimeLocked()) {
-            TWS$timeLockManager.timeLockDecrement();
-
-            // tinker after-melee hook do Only in server side, sad
-            if (tickCount % 10 == 0) {
-                for (int i = 0; i < 5; i++) {
-                    level().addParticle(
-                            ParticleTypes.DRAGON_BREATH,
-                            getX()+ random.nextDouble(),
-                            getY()+ random.nextDouble(),
-                            getZ()+ random.nextDouble(),
-                            0,
-                            .5,
-                            0
-                    );
-                }
-
-                for (int i = 0; i < 5; i++) {
-                    ((ServerLevel) level()).sendParticles(
-                            ParticleTypes.DRAGON_BREATH,
-                            getX()+ random.nextDouble(),
-                            getY()+ random.nextDouble(),
-                            getZ()+ random.nextDouble(),
-                            1,
-                            0,
-                            .5,
-                            0,
-                            1
-                    );
-                }
-            }
+        if (FvLib$getTimeLockManager().isTimeLocked()) {
+            FvLib$timeLockManager.timeLockDecrement();
 
             // if is locked, apply some base tick logic, like reducing invulnerable time.
             // from LivingEntity#baseTick
-            {
-                if (hurtTime > 0) {
-                    --hurtTime;
-                }
-                // ServerPlayer 的 invulnerable-- 在 tick() 中, 暂时不管它
-//                if (invulnerableTime > 0 && !(this instanceof ServerPlayer)) {
-//                    --invulnerableTime;
-//                }
-                if (invulnerableTime > 0) {
-                    --invulnerableTime;
-                }
-                if (isDeadOrDying() && level().shouldTickDeath(this)) {
-                    tickDeath();
-                }
-                if (lastHurtByPlayerTime > 0) {
-                    --lastHurtByPlayerTime;
-                } else {
-                    lastHurtByPlayer = null;
-                }
-                if (lastHurtMob != null && !lastHurtMob.isAlive()) {
-                    lastHurtMob = null;
-                }
-                if (lastHurtByMob != null) {
-                    if (!lastHurtByMob.isAlive()) {
-                        setLastHurtByMob((LivingEntity)null);
-                    } else if (tickCount - lastHurtByMobTimestamp > 100) {
-                        setLastHurtByMob((LivingEntity)null);
+            FvLib$doHurtTick();
+
+            if(!level().isClientSide) {
+                if (tickCount % 10 == 0) {
+                    for (int i = 0; i < 5; i++) {
+                        ((ServerLevel) level()).sendParticles(
+                                ParticleTypes.DRAGON_BREATH,
+                                getX() + random.nextDouble(),
+                                getY() + random.nextDouble(),
+                                getZ() + random.nextDouble(),
+                                1,
+                                0,
+                                .5,
+                                0,
+                                1
+                        );
                     }
                 }
+
+                ci.cancel();
+
+            } else {
+                // todo: 给时停实体一个紫色滤镜(render)
+                // bug: 1. 客户端tick停止后实体肢体可能会抽搐, 2.渲染动画没有停下, 例如岩浆怪, 在空中不会保持"展开"的状态
             }
 
-
             // 中断
-            ci.cancel();
+            //ci.cancel();
         }
     }
 
@@ -181,6 +171,40 @@ public abstract class LivingEntityMixin extends Entity implements LivingEntityMi
             //System.out.println("pureDamage: " + f1);
 
             ci.cancel();
+        }
+    }
+
+
+    ///
+    @Unique
+    private void FvLib$doHurtTick() {
+        if (hurtTime > 0) {
+            --hurtTime;
+        }
+        // ServerPlayer 的 invulnerable-- 在 tick() 中, 暂时不管它
+//                if (invulnerableTime > 0 && !(this instanceof ServerPlayer)) {
+//                    --invulnerableTime;
+//                }
+        if (invulnerableTime > 0) {
+            --invulnerableTime;
+        }
+        if (isDeadOrDying() && level().shouldTickDeath(this)) {
+            tickDeath();
+        }
+        if (lastHurtByPlayerTime > 0) {
+            --lastHurtByPlayerTime;
+        } else {
+            lastHurtByPlayer = null;
+        }
+        if (lastHurtMob != null && !lastHurtMob.isAlive()) {
+            lastHurtMob = null;
+        }
+        if (lastHurtByMob != null) {
+            if (!lastHurtByMob.isAlive()) {
+                setLastHurtByMob((LivingEntity) null);
+            } else if (tickCount - lastHurtByMobTimestamp > 100) {
+                setLastHurtByMob((LivingEntity) null);
+            }
         }
     }
 }
