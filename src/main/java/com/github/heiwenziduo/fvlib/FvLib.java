@@ -1,4 +1,4 @@
-package com.github.heiwenziduo.examplemod;
+package com.github.heiwenziduo.fvlib;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
@@ -10,12 +10,12 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
-@Mod(ExampleMod.ModId)
-public class ExampleMod
+@Mod(FvLib.ModId)
+public class FvLib
 {
-    public static final String ModId = "examplemod";
+    public static final String ModId = "fvlib";
 
-    public ExampleMod(FMLJavaModLoadingContext context)
+    public FvLib(FMLJavaModLoadingContext context)
     {
         IEventBus eventBus = context.getModEventBus();
 

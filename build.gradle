@@ -188,12 +188,12 @@ dependencies {
 }
 
 // MixinGradle Settings
-//mixin {
-//    add sourceSets.main, 'a.mixin.refmap.json'
-//    config 'a.mixin.json'
-//    debug.verbose = true
-//    debug.export = true
-//}
+mixin {
+    add sourceSets.main, 'fvlib.mixin.refmap.json'
+    config 'fvlib.mixin.json'
+    debug.verbose = true
+    debug.export = true
+}
 
 // This block of code expands all declared replace properties in the specified resource targets.
 // A missing property will result in an error. Properties are expanded using ${} Groovy notation.
