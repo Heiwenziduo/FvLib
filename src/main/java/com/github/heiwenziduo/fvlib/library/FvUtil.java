@@ -1,4 +1,4 @@
-package com.github.heiwenziduo.fvlib;
+package com.github.heiwenziduo.fvlib.library;
 
 import com.github.heiwenziduo.fvlib.api.mixin.LivingEntityMixinAPI;
 import net.minecraft.world.entity.LivingEntity;

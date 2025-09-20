@@ -1,6 +1,6 @@
 package com.github.heiwenziduo.fvlib.test;
 
-import com.github.heiwenziduo.fvlib.FvUtil;
+import com.github.heiwenziduo.fvlib.library.FvUtil;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
