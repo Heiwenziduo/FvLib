@@ -10,7 +10,7 @@ import net.minecraftforge.event.entity.living.LivingAttackEvent;
 /// 极度饥渴, 后面迁移到spell中
 public class InsatiableHunger extends FvHookedEffect implements DamageTakenHook {
     public InsatiableHunger() {
-        super(MobEffectCategory.BENEFICIAL, 0xFF0000);
+        super(MobEffectCategory.BENEFICIAL, 0xFF0000, false);
     }
 
     //=============================================test

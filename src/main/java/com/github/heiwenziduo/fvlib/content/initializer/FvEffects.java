@@ -1,7 +1,7 @@
 package com.github.heiwenziduo.fvlib.content.initializer;
 
 import com.github.heiwenziduo.fvlib.FvLib;
-import com.github.heiwenziduo.fvlib.content.effect.InsatiableHunger;
+import com.github.heiwenziduo.fvlib.content.effect.StunEffect;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
@@ -14,5 +14,5 @@ public class FvEffects {
         EFFECTS.register(eventBus);
     }
 
-    public static final RegistryObject<InsatiableHunger> INSATIABLE_HUNGER = EFFECTS.register("insatiable_hunger", InsatiableHunger::new);
+    public static final RegistryObject<StunEffect> STUN = EFFECTS.register("stun", StunEffect::new);
 }

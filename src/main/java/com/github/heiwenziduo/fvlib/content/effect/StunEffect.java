@@ -6,12 +6,12 @@ import net.minecraft.world.entity.LivingEntity;
 
 /** "Stun is a status effect that completely locks down affected units, disabling almost all of its capabilities." */
 public class StunEffect extends FvHookedEffect {
-    protected StunEffect(MobEffectCategory pCategory, int pColor) {
-        super(pCategory, pColor);
+    public StunEffect() {
+        super(MobEffectCategory.HARMFUL, 0xf1ed81, false);
     }
 
     @Override
     public void applyEffectTick(LivingEntity pLivingEntity, int pAmplifier) {
-
+        //todo: stop living's ai
     }
 }
