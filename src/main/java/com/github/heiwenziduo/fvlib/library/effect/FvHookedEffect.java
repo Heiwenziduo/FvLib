@@ -1,5 +1,6 @@
 package com.github.heiwenziduo.fvlib.library.effect;
 
+import com.github.heiwenziduo.fvlib.library.api.DispelType;
 import com.github.heiwenziduo.fvlib.library.effect.hook.EffectDispelledHook;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
@@ -12,12 +13,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 /// {@link net.minecraft.world.effect.MobEffect}
-public class FvHookedEffect extends MobEffect implements EffectDispelledHook {
-    private final boolean Dispellable;
+public abstract class FvHookedEffect extends MobEffect implements EffectDispelledHook {
+    private final boolean PierceImmunity;
+    private final DispelType DemandTypeToDispel;
 
-    protected FvHookedEffect(MobEffectCategory pCategory, int pColor, boolean dispellable) {
+    /// 默认增益无视技能免疫
+    protected FvHookedEffect(MobEffectCategory pCategory, int pColor, DispelType demandTypeToDispel) {
+        this(pCategory, pColor, demandTypeToDispel, pCategory == MobEffectCategory.BENEFICIAL);
+    }
+    protected FvHookedEffect(MobEffectCategory pCategory, int pColor, DispelType demandTypeToDispel, boolean pierceImmunity) {
         super(pCategory, pColor);
-        Dispellable = dispellable;
+        DemandTypeToDispel = demandTypeToDispel;
+        PierceImmunity = pierceImmunity;
     }
 
     /// effect do this tick
@@ -36,17 +43,35 @@ public class FvHookedEffect extends MobEffect implements EffectDispelledHook {
     public List<ItemStack> getCurativeItems() {
         ArrayList<ItemStack> cure = new ArrayList<>();
         // Dispellable effects can be cured by milk. For stun, let it override this method
-        if (Dispellable) cure.add(new ItemStack(Items.MILK_BUCKET));
+        if (isDispellable()) cure.add(new ItemStack(Items.MILK_BUCKET));
         return cure;
     }
 
-    public boolean isDispellable() {
-        return Dispellable;
+    public final boolean isDispellable() {
+        return DemandTypeToDispel != DispelType.IMMUNE;
+    }
+    public final boolean isDispellable(DispelType type) {
+        return isDispellable() && !(type == DispelType.BASIC && DemandTypeToDispel == DispelType.STRONG);
+    }
+
+    /// 将驱散类型应用到当前效果上, 返回驱散结果 <br/>
+    /// 调用了 living#removeEffect, 会抛出 MobEffectEvent.Remove 事件
+    public final boolean applyDispel(LivingEntity living, DispelType type) {
+        if (isDispellable(type)) {
+            living.removeEffect(this);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public final boolean isPierceImmunity() {
+        return PierceImmunity;
     }
 
     @Override
     public void onEffectDispelled(MobEffectEvent.Remove event) {
-        System.out.println("onEffectDispelled" + event.getEffect());
-        if (!Dispellable) event.setCanceled(true);
+        //System.out.println("onEffectDispelled-----------" + event.getEffect());
+        if (!isDispellable()) event.setCanceled(true);
     }
 }

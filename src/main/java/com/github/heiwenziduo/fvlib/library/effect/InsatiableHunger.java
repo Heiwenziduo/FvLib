@@ -1,5 +1,6 @@
 package com.github.heiwenziduo.fvlib.library.effect;
 
+import com.github.heiwenziduo.fvlib.library.api.DispelType;
 import com.github.heiwenziduo.fvlib.library.effect.hook.DamageTakenHook;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.Entity;
@@ -9,7 +10,7 @@ import net.minecraftforge.event.entity.living.LivingAttackEvent;
 /// 极度饥渴, 后面迁移到spell中
 public class InsatiableHunger extends FvHookedEffect implements DamageTakenHook {
     public InsatiableHunger() {
-        super(MobEffectCategory.BENEFICIAL, 0xFF0000, false);
+        super(MobEffectCategory.BENEFICIAL, 0xFF0000, DispelType.IMMUNE);
     }
 
     //=============================================test

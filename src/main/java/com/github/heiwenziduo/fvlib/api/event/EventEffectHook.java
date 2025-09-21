@@ -18,11 +18,6 @@ import net.minecraftforge.fml.common.Mod;
 @Mod.EventBusSubscriber(modid = FvLib.ModId, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class EventEffectHook {
 
-//    @SubscribeEvent
-//    public static void onMeleeHit() {
-//
-//    }
-
     @SubscribeEvent(priority = EventPriority.LOW)
     static void livingAttack(LivingAttackEvent event) {
         LivingEntity entity = event.getEntity();
