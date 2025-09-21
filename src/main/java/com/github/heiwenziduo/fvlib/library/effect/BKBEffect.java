@@ -11,11 +11,11 @@ import static com.github.heiwenziduo.fvlib.library.FvUtil.dispel;
 /**
  * godlike appearance, knockback resistance, magic resistance, dispel once enact, and spell immunity
  */
-public class ClassicBKBEffect extends FvHookedEffect implements EffectAddedHook {
+public class BKBEffect extends FvHookedEffect implements EffectAddedHook {
     private final float knockbackResistance = 1f;
     private final float magicResistance = 0.5f;
 
-    public ClassicBKBEffect(int pColor) {
+    public BKBEffect(int pColor) {
         super(MobEffectCategory.BENEFICIAL, pColor, DispelType.IMMUNE);
     }
 

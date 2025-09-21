@@ -14,17 +14,17 @@ import java.util.List;
 
 /// {@link net.minecraft.world.effect.MobEffect}
 public abstract class FvHookedEffect extends MobEffect implements EffectDispelledHook {
-    private final boolean PierceImmunity;
-    private final DispelType DemandTypeToDispel;
+    private final boolean isPierceImmunity;
+    private final DispelType canDispel;
 
     /// 默认增益无视技能免疫
-    protected FvHookedEffect(MobEffectCategory pCategory, int pColor, DispelType demandTypeToDispel) {
-        this(pCategory, pColor, demandTypeToDispel, pCategory == MobEffectCategory.BENEFICIAL);
+    protected FvHookedEffect(MobEffectCategory pCategory, int pColor, DispelType canDispel) {
+        this(pCategory, pColor, canDispel, pCategory == MobEffectCategory.BENEFICIAL);
     }
-    protected FvHookedEffect(MobEffectCategory pCategory, int pColor, DispelType demandTypeToDispel, boolean pierceImmunity) {
+    protected FvHookedEffect(MobEffectCategory pCategory, int pColor, DispelType canDispel, boolean isPierceImmunity) {
         super(pCategory, pColor);
-        DemandTypeToDispel = demandTypeToDispel;
-        PierceImmunity = pierceImmunity;
+        this.canDispel = canDispel;
+        this.isPierceImmunity = isPierceImmunity;
     }
 
     /// effect do this tick
@@ -48,10 +48,10 @@ public abstract class FvHookedEffect extends MobEffect implements EffectDispelle
     }
 
     public final boolean isDispellable() {
-        return DemandTypeToDispel != DispelType.IMMUNE;
+        return canDispel != DispelType.IMMUNE;
     }
     public final boolean isDispellable(DispelType type) {
-        return isDispellable() && !(type == DispelType.BASIC && DemandTypeToDispel == DispelType.STRONG);
+        return isDispellable() && !(type == DispelType.BASIC && canDispel == DispelType.STRONG);
     }
 
     /// 将驱散类型应用到当前效果上, 返回驱散结果 <br/>
@@ -66,7 +66,7 @@ public abstract class FvHookedEffect extends MobEffect implements EffectDispelle
     }
 
     public final boolean isPierceImmunity() {
-        return PierceImmunity;
+        return isPierceImmunity;
     }
 
     @Override

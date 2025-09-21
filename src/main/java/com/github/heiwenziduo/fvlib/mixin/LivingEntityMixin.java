@@ -140,11 +140,11 @@ public abstract class LivingEntityMixin extends Entity implements LivingEntityMi
         }
     }
 
-    /// 纯粹伤害不会被减免, 并发出独有事件(待实现) <br/>
-    /// 欺骗全世界的类型转换 [(LivingEntity) (Object)](https://www.reddit.com/r/fabricmc/comments/nw3rs8/how_can_i_access_the_this_in_a_mixin_for_a_class/?tl=zh-hans)
+    /// 纯粹伤害不会被减免
     @Inject(method = "actuallyHurt", at = @At("HEAD"), cancellable = true)
     public void onTakePureDamage(DamageSource pDamageSource, float pDamageAmount, CallbackInfo ci) {
         if (pDamageSource != null && pDamageSource.is(PURE) && !isInvulnerableTo(pDamageSource)) {
+            // 欺骗全世界的类型转换 [(LivingEntity) (Object)](https://www.reddit.com/r/fabricmc/comments/nw3rs8/how_can_i_access_the_this_in_a_mixin_for_a_class/?tl=zh-hans)
             pDamageAmount = Math.max(net.minecraftforge.common.ForgeHooks.onLivingHurt((LivingEntity) (Object) this, pDamageSource, pDamageAmount), pDamageAmount);
 
             float f1 = Math.max(pDamageAmount - getAbsorptionAmount(), 0.0F);
@@ -168,11 +168,17 @@ public abstract class LivingEntityMixin extends Entity implements LivingEntityMi
                 gameEvent(GameEvent.ENTITY_DAMAGE);
             }
 
-            //System.out.println("pureDamage: " + f1);
-
             ci.cancel();
         }
     }
+
+
+
+
+
+
+
+
 
 
     ///
