@@ -1,7 +1,6 @@
-package com.github.heiwenziduo.fvlib.content.effect;
+package com.github.heiwenziduo.fvlib.library.effect;
 
-import com.github.heiwenziduo.fvlib.api.effect.DamageTakenHook;
-import com.github.heiwenziduo.fvlib.library.effect.FvHookedEffect;
+import com.github.heiwenziduo.fvlib.library.effect.hook.DamageTakenHook;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;

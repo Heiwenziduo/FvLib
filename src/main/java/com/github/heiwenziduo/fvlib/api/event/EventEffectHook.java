@@ -1,7 +1,7 @@
-package com.github.heiwenziduo.fvlib.content.event;
+package com.github.heiwenziduo.fvlib.api.event;
 
 import com.github.heiwenziduo.fvlib.FvLib;
-import com.github.heiwenziduo.fvlib.api.effect.DamageTakenHook;
+import com.github.heiwenziduo.fvlib.library.effect.hook.DamageTakenHook;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -10,8 +10,6 @@ import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-
-import java.util.Map;
 
 @Mod.EventBusSubscriber(modid = FvLib.ModId, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class EventEffectHook {

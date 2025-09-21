@@ -1,6 +1,5 @@
-package com.github.heiwenziduo.fvlib.content.effect;
+package com.github.heiwenziduo.fvlib.library.effect;
 
-import com.github.heiwenziduo.fvlib.library.effect.FvHookedEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
 

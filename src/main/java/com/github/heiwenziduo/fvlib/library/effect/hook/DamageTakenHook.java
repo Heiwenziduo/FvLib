@@ -1,4 +1,4 @@
-package com.github.heiwenziduo.fvlib.api.effect;
+package com.github.heiwenziduo.fvlib.library.effect.hook;
 
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 

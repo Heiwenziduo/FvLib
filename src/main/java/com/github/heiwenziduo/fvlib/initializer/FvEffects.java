@@ -1,7 +1,7 @@
-package com.github.heiwenziduo.fvlib.content.initializer;
+package com.github.heiwenziduo.fvlib.initializer;
 
 import com.github.heiwenziduo.fvlib.FvLib;
-import com.github.heiwenziduo.fvlib.content.effect.StunEffect;
+import com.github.heiwenziduo.fvlib.library.effect.StunEffect;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;

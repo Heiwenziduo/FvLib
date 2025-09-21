@@ -1,6 +1,6 @@
 package com.github.heiwenziduo.fvlib;
 
-import com.github.heiwenziduo.fvlib.content.initializer.FvEffects;
+import com.github.heiwenziduo.fvlib.initializer.FvEffects;
 import com.github.heiwenziduo.fvlib.test.TestItems;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;

@@ -1,10 +1,8 @@
 package com.github.heiwenziduo.fvlib.data;
 
-import com.github.heiwenziduo.fvlib.FvLib;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.Entity;
@@ -14,7 +12,7 @@ import javax.annotation.Nullable;
 import static com.github.heiwenziduo.fvlib.FvLib.fvResource;
 
 public class FvLibDamageType {
-    /// Damage Type: <span style="color: f4f79e;">PURE</span>
+    /// Damage Type: &nbsp;<span style="color: f4f79e;">PURE</span>
     public static final ResourceKey<DamageType> PURE = create("pure");
 
     /** Creates a new damage type tag */
