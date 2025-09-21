@@ -12,6 +12,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.damagesource.CombatTracker;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -213,4 +214,10 @@ public abstract class LivingEntityMixin extends Entity implements LivingEntityMi
             }
         }
     }
+
+    // ==================== test ======================
+    /// 09/21 可以用这种方法把映射前的类名调出来, 位于打包后的 refmap
+//    @Inject(method = "onEffectRemoved", at = @At("HEAD"))
+//    protected abstract void onEffectRemoved(MobEffectInstance pEffectInstance, CallbackInfo ci);
+    // ==================== test-end ==================
 }

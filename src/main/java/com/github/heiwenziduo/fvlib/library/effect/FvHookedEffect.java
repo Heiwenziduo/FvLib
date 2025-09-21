@@ -55,7 +55,8 @@ public abstract class FvHookedEffect extends MobEffect implements EffectDispelle
     }
 
     /// 将驱散类型应用到当前效果上, 返回驱散结果 <br/>
-    /// 调用了 living#removeEffect, 会抛出 MobEffectEvent.Remove 事件
+    /// 调用了 living#removeEffect, 会抛出 MobEffectEvent.Remove 事件 <br/>
+    /// Do NOT call this during iterate, call {@link isDispellable(type)} instead
     public final boolean applyDispel(LivingEntity living, DispelType type) {
         if (isDispellable(type)) {
             living.removeEffect(this);

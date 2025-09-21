@@ -11,6 +11,9 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ConcurrentModificationException;
+import java.util.Iterator;
+
 import static com.github.heiwenziduo.fvlib.data.FvLibDamageType.PURE;
 
 /**
@@ -39,24 +42,34 @@ public class FvUtil {
         return !effect.getCurativeItems().isEmpty();
     }
 
-    /// Dispel a living
+    /// Dispel a living. iterator see: {@link LivingEntity#tickEffects()}
     /// @return dispelled effects number
     public static int dispel(LivingEntity target, LivingEntity from, DispelType type) {
         int i = 0;
         var dispelledType = target.isAlliedTo(from) ? MobEffectCategory.BENEFICIAL : MobEffectCategory.HARMFUL; //中性效果暂时不管
-        //todo 改为迭代器
-        for (MobEffectInstance instance : target.getActiveEffects()) {
-            MobEffect effect = instance.getEffect();
-            if (effect.getCategory() != dispelledType) continue;
+        Iterator<MobEffect> iterator = target.getActiveEffectsMap().keySet().iterator();
+        // 遍历的同时修改原list: iterator
+        try {
+            while (iterator.hasNext()) {
+                MobEffect effect = iterator.next();
+                MobEffectInstance mobeffectinstance = target.getEffect(effect);
+                if (mobeffectinstance == null) continue;
+                // not right type we want to dispel
+                if (effect.getCategory() != dispelledType) continue;
 
-            if (effect instanceof FvHookedEffect fvEffect) {
-                if (fvEffect.isDispellable() && fvEffect.applyDispel(target, type))
+                if (effect instanceof FvHookedEffect fvEffect) {
+                    if(fvEffect.isDispellable(type)) {
+                        iterator.remove();
+                        target.onEffectRemoved(mobeffectinstance);
+                        i++;
+                    }
+                } else if (isGenericDispellable(effect)) {
+                    iterator.remove();
+                    target.onEffectRemoved(mobeffectinstance);
                     i++;
-            } else if (isGenericDispellable(effect)) {
-                target.removeEffect(effect);
-                i++;
+                }
             }
-        }
+        } catch (ConcurrentModificationException ignored) {}
         return i;
     }
     /// Dispel a living

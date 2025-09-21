@@ -23,10 +23,6 @@ public class BKBEffect extends FvHookedEffect implements EffectAddedHook {
     public void onEffectAdded(MobEffectEvent.Added event) {
         // 激活时施加一次弱驱散
         LivingEntity living = event.getEntity();
-        int i = dispel(living, DispelType.BASIC);
-
-        System.out.println("ClassicBKBDispel: " + i);
-        System.out.println("client: " + living.level().isClientSide);
-
+        dispel(living, DispelType.BASIC);
     }
 }
