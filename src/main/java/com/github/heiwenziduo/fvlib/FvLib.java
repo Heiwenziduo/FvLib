@@ -1,5 +1,6 @@
 package com.github.heiwenziduo.fvlib;
 
+import com.github.heiwenziduo.fvlib.initializer.FvAttributes;
 import com.github.heiwenziduo.fvlib.initializer.FvEffects;
 import com.github.heiwenziduo.fvlib.test.TestItems;
 import net.minecraft.resources.ResourceLocation;
@@ -15,6 +16,7 @@ public class FvLib {
     public FvLib(FMLJavaModLoadingContext context) {
         IEventBus eventBus = context.getModEventBus();
 
+        FvAttributes.register(eventBus);
         FvEffects.register(eventBus);
 
         TestItems.register(eventBus);

@@ -2,6 +2,7 @@ package com.github.heiwenziduo.fvlib.mixin;
 
 import com.github.heiwenziduo.fvlib.api.manager.TimeLockManager;
 import com.github.heiwenziduo.fvlib.api.mixin.LivingEntityMixinAPI;
+import com.github.heiwenziduo.fvlib.initializer.FvAttributes;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -15,16 +16,20 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeMap;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import static com.github.heiwenziduo.fvlib.data.FvLibDamageType.PURE;
 
@@ -47,6 +52,7 @@ public abstract class LivingEntityMixin extends Entity implements LivingEntityMi
     private LivingEntity lastHurtByMob;
     @Shadow
     private int lastHurtByMobTimestamp;
+    @Shadow @Final private AttributeMap attributes;
 
     @Shadow
     public abstract boolean isDeadOrDying();
@@ -64,8 +70,8 @@ public abstract class LivingEntityMixin extends Entity implements LivingEntityMi
     public abstract float getHealth();
     @Shadow
     public abstract void setHealth(float pAbsorptionAmount);
-
     @Shadow public abstract boolean hasEffect(MobEffect pEffect);
+    @Shadow public abstract void heal(float pHealAmount);
 
 
     @Unique
@@ -80,15 +86,14 @@ public abstract class LivingEntityMixin extends Entity implements LivingEntityMi
         return FvLib$timeLockManager;
     }
 
+    @Inject(method = "createLivingAttributes", at = @At("RETURN"), cancellable = true)
+    private static void moreLivingAttributes(CallbackInfoReturnable<AttributeSupplier.Builder> cir) {
+        cir.setReturnValue(cir.getReturnValue().add(FvAttributes.MAGIC_RESISTANCE.get()).add(FvAttributes.STATUS_RESISTANCE.get()).add(FvAttributes.PASSIVE_REGEN.get()));
+    }
+
     @Inject(method = "defineSynchedData", at = @At("HEAD"))
     public void defineSynchedData(CallbackInfo ci) {
         entityData.define(DATA_TIME_LOCK, 0);
-    }
-
-
-    @Inject(method = "baseTick", at = @At("HEAD"))
-    public void timeLockBaseTick(CallbackInfo ci) {
-
     }
 
     /// 被时间锁定的活物不能行动
@@ -107,9 +112,10 @@ public abstract class LivingEntityMixin extends Entity implements LivingEntityMi
 
 
         // 似乎也会插入所有子类的开头 ?
-        handleTimeLock(ci);
-        handleStun(ci);
-        handleHex();
+        FvLib$handleTimeLock(ci);
+        FvLib$handleLifeRegen();
+        FvLib$handleStun(ci);
+        FvLib$handleHex();
     }
 
     /// 纯粹伤害不会被减免
@@ -192,7 +198,7 @@ public abstract class LivingEntityMixin extends Entity implements LivingEntityMi
 
     ///
     @Unique
-    private void handleTimeLock(CallbackInfo ci) {
+    private void FvLib$handleTimeLock(CallbackInfo ci) {
         if (FvLib$getTimeLockManager().isTimeLocked()) {
             FvLib$timeLockManager.timeLockDecrement();
             // if is locked, apply some base tick logic, like reducing invulnerable time.
@@ -215,16 +221,26 @@ public abstract class LivingEntityMixin extends Entity implements LivingEntityMi
         }
     }
 
+    /// {@link LivingEntity#heal(float)}
+    @Unique
+    private void FvLib$handleLifeRegen() {
+        if (!level().isClientSide && tickCount % 5 == 0){
+            double regen = attributes.getValue(FvAttributes.PASSIVE_REGEN.get());
+            // heal方法会调用回血事件, PASSIVE_REGEN受治疗增强影响
+            heal((float) (regen / 4));
+        }
+    }
+
     ///
     @Unique
-    private void handleStun(CallbackInfo ci) {
+    private void FvLib$handleStun(CallbackInfo ci) {
         // 能运行到这里说明不在时停中
 
     }
 
     /// todo
     @Unique
-    private void handleHex() {
+    private void FvLib$handleHex() {
 
     }
     // ==================== test ======================
