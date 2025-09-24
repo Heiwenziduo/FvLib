@@ -1,6 +1,5 @@
 package com.github.heiwenziduo.fvlib.mixin;
 
-import com.github.heiwenziduo.fvlib.FvLib;
 import com.github.heiwenziduo.fvlib.api.manager.TimeLockManager;
 import com.github.heiwenziduo.fvlib.api.mixin.LivingEntityMixinAPI;
 import net.minecraft.core.particles.ParticleTypes;
@@ -12,7 +11,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.damagesource.CombatTracker;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -66,6 +65,8 @@ public abstract class LivingEntityMixin extends Entity implements LivingEntityMi
     @Shadow
     public abstract void setHealth(float pAbsorptionAmount);
 
+    @Shadow public abstract boolean hasEffect(MobEffect pEffect);
+
 
     @Unique
     private static final EntityDataAccessor<Integer> DATA_TIME_LOCK = SynchedEntityData.defineId(LivingEntity.class, EntityDataSerializers.INT);
@@ -92,7 +93,7 @@ public abstract class LivingEntityMixin extends Entity implements LivingEntityMi
 
     /// 被时间锁定的活物不能行动
     @Inject(method = "tick", at = @At("HEAD"), cancellable = true)
-    public void timeLockTick(CallbackInfo ci) {
+    public void livingTickMixin(CallbackInfo ci) {
         int timeLockSync;
         if (!level().isClientSide) {
             // 服务端发起同步
@@ -104,41 +105,11 @@ public abstract class LivingEntityMixin extends Entity implements LivingEntityMi
             FvLib$timeLockManager.setTimeLock(timeLockSync);
         }
 
+
         // 似乎也会插入所有子类的开头 ?
-        if (FvLib$getTimeLockManager().isTimeLocked()) {
-            FvLib$timeLockManager.timeLockDecrement();
-
-            // if is locked, apply some base tick logic, like reducing invulnerable time.
-            // from LivingEntity#baseTick
-            FvLib$doHurtTick();
-
-            if(!level().isClientSide) {
-                if (tickCount % 10 == 0) {
-                    for (int i = 0; i < 5; i++) {
-                        ((ServerLevel) level()).sendParticles(
-                                ParticleTypes.DRAGON_BREATH,
-                                getX() + random.nextDouble(),
-                                getY() + random.nextDouble(),
-                                getZ() + random.nextDouble(),
-                                1,
-                                0,
-                                .5,
-                                0,
-                                1
-                        );
-                    }
-                }
-
-                ci.cancel();
-
-            } else {
-                // todo: 给时停实体一个紫色滤镜(render)
-                // bug: 1. 客户端tick停止后实体肢体可能会抽搐, 2.渲染动画没有停下, 例如岩浆怪, 在空中不会保持"展开"的状态
-            }
-
-            // 中断
-            //ci.cancel();
-        }
+        handleTimeLock(ci);
+        handleStun(ci);
+        handleHex();
     }
 
     /// 纯粹伤害不会被减免
@@ -173,8 +144,12 @@ public abstract class LivingEntityMixin extends Entity implements LivingEntityMi
         }
     }
 
-
-
+    /// 技能免疫状态, 普通负面效果不会生效
+//    @Inject(method = "tickEffects", at = @At(value = "INVOKE", target = ""))
+//    public void tickEffectWhenImmunity(CallbackInfo ci) {
+//        // todo: 处理属性修改类的负面效果
+//
+//    }
 
 
 
@@ -215,6 +190,43 @@ public abstract class LivingEntityMixin extends Entity implements LivingEntityMi
         }
     }
 
+    ///
+    @Unique
+    private void handleTimeLock(CallbackInfo ci) {
+        if (FvLib$getTimeLockManager().isTimeLocked()) {
+            FvLib$timeLockManager.timeLockDecrement();
+            // if is locked, apply some base tick logic, like reducing invulnerable time.
+            // from LivingEntity#baseTick
+            FvLib$doHurtTick();
+
+            if(!level().isClientSide) {
+                if (tickCount % 10 == 0) {
+                    for (int i = 0; i < 5; i++) {
+                        ((ServerLevel) level()).sendParticles(ParticleTypes.DRAGON_BREATH, getX() + random.nextDouble(), getY() + random.nextDouble(), getZ() + random.nextDouble(), 1, 0, .5, 0, .5);
+                    }
+                }
+
+                ci.cancel();
+
+            } else {
+                // todo: 给时停实体一个紫色滤镜(render)
+                // bug: 1. 客户端tick停止后实体肢体可能会抽搐, 2.渲染动画没有停下, 例如岩浆怪, 在空中不会保持"展开"的状态
+            }
+        }
+    }
+
+    ///
+    @Unique
+    private void handleStun(CallbackInfo ci) {
+        // 能运行到这里说明不在时停中
+
+    }
+
+    /// todo
+    @Unique
+    private void handleHex() {
+
+    }
     // ==================== test ======================
     /// 09/21 可以用这种方法把映射前的类名调出来, 位于打包后的 refmap
 //    @Inject(method = "onEffectRemoved", at = @At("HEAD"))

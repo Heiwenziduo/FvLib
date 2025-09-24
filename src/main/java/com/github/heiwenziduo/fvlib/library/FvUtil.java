@@ -33,8 +33,8 @@ public class FvUtil {
 
     /// Damage Type: &nbsp;<span style="color: 47afff;">MAGIC</span>
     public static boolean isGenericMagic(DamageSource damage) {
-        // every source not PURE and have BYPASSES_ARMOR tag will be defined as magic
-        return !damage.is(PURE) && !damage.is(DamageTypeTags.BYPASSES_ARMOR);
+        // every source not PURE(generic pure XD) and have BYPASSES_ARMOR tag will be defined as magic
+        return damage.is(DamageTypeTags.BYPASSES_ARMOR) && !damage.is(PURE) && !damage.is(DamageTypeTags.BYPASSES_INVULNERABILITY) && !damage.is(DamageTypeTags.BYPASSES_EFFECTS);
     }
 
     /// just define if an effect can be cured, it's a dispellable effect

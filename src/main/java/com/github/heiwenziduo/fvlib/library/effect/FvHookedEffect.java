@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /// {@link net.minecraft.world.effect.MobEffect}
+/// 用于给Effect效果添加触发钩子的抽象层, 需设定效果驱散类型{@link DispelType}和是否无视BKB
 public abstract class FvHookedEffect extends MobEffect implements EffectDispelledHook {
     private final boolean isPierceImmunity;
     private final DispelType canDispel;
