@@ -8,6 +8,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
+/// for outside usage, pls see {@link com.github.heiwenziduo.fvlib.library.api.FvAttribute}
 public class FvAttributes {
     public static final DeferredRegister<Attribute> ATTRIBUTES = DeferredRegister.create(ForgeRegistries.ATTRIBUTES, FvLib.ModId);
     public static void register(IEventBus eventBus) {

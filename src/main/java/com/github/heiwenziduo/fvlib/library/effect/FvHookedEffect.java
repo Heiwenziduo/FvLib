@@ -14,15 +14,15 @@ import java.util.List;
 
 /// {@link net.minecraft.world.effect.MobEffect}
 /// 用于给Effect效果添加触发钩子的抽象层, 需设定效果驱散类型{@link DispelType}和是否无视BKB
-public abstract class FvHookedEffect extends MobEffect implements EffectDispelledHook {
+public class FvHookedEffect extends MobEffect implements EffectDispelledHook {
     private final boolean isPierceImmunity;
     private final DispelType canDispel;
 
     /// 默认增益无视技能免疫
-    protected FvHookedEffect(MobEffectCategory pCategory, int pColor, DispelType canDispel) {
+    public FvHookedEffect(MobEffectCategory pCategory, int pColor, DispelType canDispel) {
         this(pCategory, pColor, canDispel, pCategory == MobEffectCategory.BENEFICIAL);
     }
-    protected FvHookedEffect(MobEffectCategory pCategory, int pColor, DispelType canDispel, boolean isPierceImmunity) {
+    public FvHookedEffect(MobEffectCategory pCategory, int pColor, DispelType canDispel, boolean isPierceImmunity) {
         super(pCategory, pColor);
         this.canDispel = canDispel;
         this.isPierceImmunity = isPierceImmunity;
