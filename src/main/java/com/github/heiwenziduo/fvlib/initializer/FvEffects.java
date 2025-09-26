@@ -15,7 +15,7 @@ public class FvEffects {
         EFFECTS.register(eventBus);
     }
 
-    public static final RegistryObject<StunEffect> CLASSIC_STUN = EFFECTS.register("stun_classic", StunEffect::new);
+    public static final RegistryObject<StunEffect> CLASSIC_STUN = EFFECTS.register("stun_classic", () -> new StunEffect(true));
     public static final RegistryObject<BKBEffect> CLASSIC_BKB = EFFECTS.register("bkb_classic", () -> new BKBEffect(0xf4c22c));
 
     // example of reuse Stun effect

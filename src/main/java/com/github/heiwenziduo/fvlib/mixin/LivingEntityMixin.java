@@ -3,6 +3,8 @@ package com.github.heiwenziduo.fvlib.mixin;
 import com.github.heiwenziduo.fvlib.api.manager.TimeLockManager;
 import com.github.heiwenziduo.fvlib.api.mixin.LivingEntityMixinAPI;
 import com.github.heiwenziduo.fvlib.initializer.FvAttributes;
+import com.github.heiwenziduo.fvlib.initializer.FvEffects;
+import com.github.heiwenziduo.fvlib.library.effect.FvHookedEffect;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -13,6 +15,8 @@ import net.minecraft.stats.Stats;
 import net.minecraft.world.damagesource.CombatTracker;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectCategory;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -72,7 +76,7 @@ public abstract class LivingEntityMixin extends Entity implements LivingEntityMi
     public abstract void setHealth(float pAbsorptionAmount);
     @Shadow public abstract boolean hasEffect(MobEffect pEffect);
     @Shadow public abstract void heal(float pHealAmount);
-
+    @Shadow @javax.annotation.Nullable public abstract MobEffectInstance getEffect(MobEffect pEffect);
 
     @Unique
     private static final EntityDataAccessor<Integer> DATA_TIME_LOCK = SynchedEntityData.defineId(LivingEntity.class, EntityDataSerializers.INT);
@@ -150,12 +154,24 @@ public abstract class LivingEntityMixin extends Entity implements LivingEntityMi
         }
     }
 
-    /// 技能免疫状态, 普通负面效果不会生效
-//    @Inject(method = "tickEffects", at = @At(value = "INVOKE", target = ""))
-//    public void tickEffectWhenImmunity(CallbackInfo ci) {
-//        // todo: 处理属性修改类的负面效果
-//
-//    }
+    /// 技能免疫状态, 普通负面效果不会生效 (这样逻辑更简洁)
+    @Inject(method = "canBeAffected", at = @At("HEAD"), cancellable = true)
+    public void affectEffectWhenBKB(MobEffectInstance pEffectInstance, CallbackInfoReturnable<Boolean> cir) {
+        MobEffect toApply = pEffectInstance.getEffect();
+        if (toApply.getCategory() != MobEffectCategory.HARMFUL) return;
+
+        // todo: 如果有其他effect要继承bkb怎么写?
+        // 也许可以换成 attribute?
+        var instance = getEffect(FvEffects.CLASSIC_BKB.get());
+        if (instance != null) {
+            MobEffect bkb = instance.getEffect();
+            // 默认所有传统效果都是不无视魔免的
+            if (toApply instanceof FvHookedEffect hooked) {
+                if (hooked.isPierceImmunity()) return; // 无视魔免的效果仍可施加
+                cir.setReturnValue(false);
+            } else cir.setReturnValue(false);
+        }
+    }
 
 
 

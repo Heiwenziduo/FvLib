@@ -1,10 +1,8 @@
 package com.github.heiwenziduo.fvlib.api.event;
 
 import com.github.heiwenziduo.fvlib.FvLib;
-import com.github.heiwenziduo.fvlib.library.effect.hook.DamageTakenHook;
-import com.github.heiwenziduo.fvlib.library.effect.hook.EffectAddedHook;
-import com.github.heiwenziduo.fvlib.library.effect.hook.EffectDispelledHook;
-import com.github.heiwenziduo.fvlib.library.effect.hook.EffectExpiredHook;
+import com.github.heiwenziduo.fvlib.library.effect.FvHookedEffect;
+import com.github.heiwenziduo.fvlib.library.effect.hook.*;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -42,11 +40,28 @@ public class EventEffectHook {
     }
 
     @SubscribeEvent
+    static void effectsApplyCheck(MobEffectEvent.Applicable event) {
+        MobEffect effect = event.getEffectInstance().getEffect();
+        LivingEntity living = event.getEntity();
+        if (effect instanceof EffectApplicableHook){
+            ((EffectApplicableHook) effect).onEffectApplyCheck(event);
+        }
+    }
+
+    @SubscribeEvent
     static void effectsAdd(MobEffectEvent.Added event) {
         MobEffect effect = event.getEffectInstance().getEffect();
+        LivingEntity living = event.getEntity();
         if (effect instanceof EffectAddedHook){
             ((EffectAddedHook) effect).onEffectAdded(event);
         }
+        // 每次施加效果时遍历列表或许导致性能问题, 暂不启用
+
+//        for (var effect0 : living.getActiveEffectsMap().keySet()) {
+//            if (effect0 instanceof FvHookedEffect hookedEffect && hookedEffect instanceof EffectOtherAddedHook) {
+//                ((EffectOtherAddedHook) hookedEffect).onEffectOtherAdded(event);
+//            }
+//        }
     }
 
     @SubscribeEvent(priority = EventPriority.HIGH)
