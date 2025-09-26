@@ -1,4 +1,4 @@
-package com.github.heiwenziduo.fvlib.data;
+package com.github.heiwenziduo.fvlib.library.api;
 
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
@@ -11,7 +11,7 @@ import javax.annotation.Nullable;
 
 import static com.github.heiwenziduo.fvlib.FvLib.fvResource;
 
-public class FvLibDamageType {
+public class FvDamageType {
     /// Damage Type: &nbsp;<span style="color: f4f79e;">PURE</span>
     public static final ResourceKey<DamageType> PURE = create("pure");
 

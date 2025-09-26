@@ -9,12 +9,11 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 
-import static com.github.heiwenziduo.fvlib.data.FvLibDamageType.PURE;
+import static com.github.heiwenziduo.fvlib.library.api.FvDamageType.PURE;
 
 /**
  * <p>*welcum to TimeZone*</p>

@@ -31,7 +31,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import static com.github.heiwenziduo.fvlib.data.FvLibDamageType.PURE;
+import static com.github.heiwenziduo.fvlib.library.api.FvDamageType.PURE;
 
 
 @Mixin(value = LivingEntity.class)
