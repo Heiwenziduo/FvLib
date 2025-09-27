@@ -1,6 +1,7 @@
 package com.github.heiwenziduo.fvlib.initializer;
 
 import com.github.heiwenziduo.fvlib.FvLib;
+import com.github.heiwenziduo.fvlib.api.attribute.ApproachLimitAttribute;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.RangedAttribute;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -19,11 +20,11 @@ public class FvAttributes {
             () -> new RangedAttribute("attribute.fvlib.passive_regen", 0, 0, 299792458));
 
     public static final RegistryObject<Attribute> MAGIC_RESISTANCE = ATTRIBUTES.register("magic_resistance",
-            () -> new RangedAttribute("attribute.fvlib.magic_resistance", 0, -1, 1));
+            () -> new ApproachLimitAttribute("attribute.fvlib.magic_resistance", 0));
 
     public static final RegistryObject<Attribute> STATUS_RESISTANCE = ATTRIBUTES.register("status_resistance",
-            () -> new RangedAttribute("attribute.fvlib.status_resistance", 0, -1, 1));
+            () -> new ApproachLimitAttribute("attribute.fvlib.status_resistance", 0));
 
     public static final RegistryObject<Attribute> EVASION = ATTRIBUTES.register("evasion",
-            () -> new RangedAttribute("attribute.fvlib.evasion", 0, 0, 1));
+            () -> new ApproachLimitAttribute("attribute.fvlib.evasion", 0));
 }

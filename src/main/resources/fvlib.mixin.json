@@ -6,6 +6,7 @@
   "compatibilityLevel": "JAVA_17",
   "refmap": "fvlib.mixin.refmap.json",
   "mixins": [
+    "AttributeInstanceMixin",
     "LivingEntityMixin",
     "PlayerMixin"
   ],
