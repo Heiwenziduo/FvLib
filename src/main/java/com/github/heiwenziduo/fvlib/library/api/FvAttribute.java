@@ -10,4 +10,6 @@ public class FvAttribute {
     public static final Attribute MAGIC_RESISTANCE = FvAttributes.MAGIC_RESISTANCE.get();
 
     public static final Attribute STATUS_RESISTANCE = FvAttributes.STATUS_RESISTANCE.get();
+
+    public static final Attribute EVASION = FvAttributes.EVASION.get();
 }

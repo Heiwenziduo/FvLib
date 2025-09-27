@@ -12,21 +12,24 @@ import java.util.UUID;
 import static com.github.heiwenziduo.fvlib.library.FvUtil.dispel;
 import static com.github.heiwenziduo.fvlib.library.FvUtil.setBKB;
 import static com.github.heiwenziduo.fvlib.library.api.FvAttribute.MAGIC_RESISTANCE;
+import static net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation.ADDITION;
+import static net.minecraft.world.entity.ai.attributes.Attributes.KNOCKBACK_RESISTANCE;
 
 /**
  * *godlike appearance, knockback resistance, magic resistance, dispel once enact, and spell immunity<br/><br/>
  * 生效期间阻止负面效果见{@link com.github.heiwenziduo.fvlib.mixin.LivingEntityMixin#affectEffectWhenBKB}
  */
 public class BKBEffect extends FvHookedEffect implements EffectAddedHook {
-    private final float knockbackResistance = 1f;
-    private final float magicResistance = 0.5f;
+    public static final float KnockbackResistance = 1f;
+    public static final float MagicResistance = 0.5f;
 
     public BKBEffect(int pColor, double magicResistance) {
         super(MobEffectCategory.BENEFICIAL, pColor, DispelType.IMMUNE);
-        addMagicResistance(magicResistance);
+        addAttributeModifier(MAGIC_RESISTANCE, "6a74ae0b-ebe4-49a4-9d4b-95bd43350fcd", magicResistance, ADDITION);
+        addAttributeModifier(KNOCKBACK_RESISTANCE, "5670362b-5d34-413f-989c-61bf64fd0ee6", KnockbackResistance, ADDITION);
     }
     public BKBEffect(int pColor) {
-        this(pColor, 0.5);
+        this(pColor, MagicResistance);
     }
 
     @Override
@@ -47,10 +50,5 @@ public class BKBEffect extends FvHookedEffect implements EffectAddedHook {
     @Override
     public boolean isDurationEffectTick(int pDuration, int pAmplifier) {
         return true;
-    }
-
-    public void addMagicResistance(double value) {
-        AttributeModifier attributemodifier = new AttributeModifier(UUID.fromString("6a74ae0b-ebe4-49a4-9d4b-95bd43350fcd"), this::getDescriptionId, value, AttributeModifier.Operation.ADDITION);
-        getAttributeModifiers().put(MAGIC_RESISTANCE, attributemodifier);
     }
 }

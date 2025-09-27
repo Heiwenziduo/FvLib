@@ -2,6 +2,7 @@
   "attribute.fvlib.passive_regen": "Passive Regeneration",
   "attribute.fvlib.magic_resistance": "Generic Magic Resistance",
   "attribute.fvlib.status_resistance": "Status Resistance",
+  "attribute.fvlib.evasion": "Evasion",
 
   "effect.fvlib.stun_classic": "Stun",
   "effect.fvlib.bkb_classic": "BKB"

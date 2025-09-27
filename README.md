@@ -2,9 +2,10 @@
 ***
 
 #### TodoList:
-* Attr: ~~LifeRegen~~, MagicResi, StatusResi
-* BKB tick debuff immunity
-* BKB attr debuff immunity
+* Attr: ~~LifeRegen~~, MagicResi, StatusResi, Evasion
+* ~~BKB debuff immunity~~
+* Time-lock renderer
+* Stun
 * Hex
 
 

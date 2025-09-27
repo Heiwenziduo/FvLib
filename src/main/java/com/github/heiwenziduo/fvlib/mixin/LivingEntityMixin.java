@@ -105,7 +105,7 @@ public abstract class LivingEntityMixin extends Entity implements LivingEntityMi
 
     @Inject(method = "createLivingAttributes", at = @At("RETURN"), cancellable = true)
     private static void moreLivingAttributes(CallbackInfoReturnable<AttributeSupplier.Builder> cir) {
-        cir.setReturnValue(cir.getReturnValue().add(FvAttributes.MAGIC_RESISTANCE.get()).add(FvAttributes.STATUS_RESISTANCE.get()).add(FvAttributes.PASSIVE_REGEN.get()));
+        cir.setReturnValue(cir.getReturnValue().add(FvAttributes.MAGIC_RESISTANCE.get()).add(FvAttributes.STATUS_RESISTANCE.get()).add(FvAttributes.PASSIVE_REGEN.get()).add(FvAttributes.EVASION.get()));
     }
 
     @Inject(method = "defineSynchedData", at = @At("HEAD"))

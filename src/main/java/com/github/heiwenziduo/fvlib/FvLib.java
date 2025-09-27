@@ -2,7 +2,7 @@ package com.github.heiwenziduo.fvlib;
 
 import com.github.heiwenziduo.fvlib.initializer.FvAttributes;
 import com.github.heiwenziduo.fvlib.initializer.FvEffects;
-import com.github.heiwenziduo.fvlib.test.TestItems;
+import com.github.heiwenziduo.fvlib.test.TestThings;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -19,7 +19,7 @@ public class FvLib {
         FvAttributes.register(eventBus);
         FvEffects.register(eventBus);
 
-        TestItems.register(eventBus);
+        //TestThings.register(eventBus);
 
         MinecraftForge.EVENT_BUS.register(this);
     }

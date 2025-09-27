@@ -19,8 +19,11 @@ public class FvAttributes {
             () -> new RangedAttribute("attribute.fvlib.passive_regen", 0, 0, 299792458));
 
     public static final RegistryObject<Attribute> MAGIC_RESISTANCE = ATTRIBUTES.register("magic_resistance",
-            () -> new RangedAttribute("attribute.fvlib.magic_resistance", 0, -299792458, 1));
+            () -> new RangedAttribute("attribute.fvlib.magic_resistance", 0, -1, 1));
 
     public static final RegistryObject<Attribute> STATUS_RESISTANCE = ATTRIBUTES.register("status_resistance",
-            () -> new RangedAttribute("attribute.fvlib.status_resistance", 0, -299792458, 1));
+            () -> new RangedAttribute("attribute.fvlib.status_resistance", 0, -1, 1));
+
+    public static final RegistryObject<Attribute> EVASION = ATTRIBUTES.register("evasion",
+            () -> new RangedAttribute("attribute.fvlib.evasion", 0, 0, 1));
 }
