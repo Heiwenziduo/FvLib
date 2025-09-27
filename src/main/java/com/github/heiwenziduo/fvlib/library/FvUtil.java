@@ -35,11 +35,6 @@ public class FvUtil {
         return ((LivingEntityMixinAPI) living).FvLib$getBKBEffectManager().hasBKB();
     }
 
-    /// set a living's BKB status
-    public static void setBKB(LivingEntity living, boolean bkb) {
-        ((LivingEntityMixinAPI) living).FvLib$getBKBEffectManager().setBKB(bkb);
-    }
-
     /// Damage Type: &nbsp;<span style="color: ff2556;">PHYSIC</span>
     public static boolean isGenericPhysic(DamageSource damage) {
         // as long as it does not bypassArmor...

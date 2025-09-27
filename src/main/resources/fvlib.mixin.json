@@ -8,7 +8,8 @@
   "mixins": [
     "AttributeInstanceMixin",
     "LivingEntityMixin",
-    "PlayerMixin"
+    "PlayerMixin",
+    "EffectInstanceMixin"
   ],
   "client": [],
   "server": [],

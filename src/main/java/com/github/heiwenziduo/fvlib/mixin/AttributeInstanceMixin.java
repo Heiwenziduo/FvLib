@@ -14,7 +14,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.Collection;
 
 import static com.github.heiwenziduo.fvlib.api.attribute.ApproachLimitAttribute.MaxValue;
-import static com.github.heiwenziduo.fvlib.api.attribute.ApproachLimitAttribute.MinValue;
 
 @Mixin(value = AttributeInstance.class)
 public abstract class AttributeInstanceMixin {
@@ -30,7 +29,7 @@ public abstract class AttributeInstanceMixin {
             double d0 = getBaseValue();
 
             for(AttributeModifier modifier : getModifiersOrEmpty(AttributeModifier.Operation.ADDITION)) {
-                if (d0 >= MaxValue || d0 <= MinValue) break;
+                if (d0 >= MaxValue || d0 <= appro.getMinValue()) break;
                 // 应确保以不同顺序计算得到相同结果
                 d0 += (MaxValue - d0) * modifier.getAmount();
             }
