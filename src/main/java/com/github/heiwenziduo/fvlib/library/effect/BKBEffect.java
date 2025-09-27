@@ -10,6 +10,7 @@ import net.minecraftforge.event.entity.living.MobEffectEvent;
 import java.util.UUID;
 
 import static com.github.heiwenziduo.fvlib.library.FvUtil.dispel;
+import static com.github.heiwenziduo.fvlib.library.FvUtil.setBKB;
 import static com.github.heiwenziduo.fvlib.library.api.FvAttribute.MAGIC_RESISTANCE;
 
 /**
@@ -33,6 +34,19 @@ public class BKBEffect extends FvHookedEffect implements EffectAddedHook {
         // 激活时施加一次弱驱散
         LivingEntity living = event.getEntity();
         dispel(living, DispelType.BASIC);
+        setBKB(living, true);
+    }
+
+    /// effect do this tick <br/> 其他带有魔免的效果应继承这一方法
+    @Override
+    public void applyEffectTick(LivingEntity pLivingEntity, int pAmplifier) {
+        setBKB(pLivingEntity, true);
+    }
+
+    /// @return whether effect will do #applyEffectTick this tick
+    @Override
+    public boolean isDurationEffectTick(int pDuration, int pAmplifier) {
+        return true;
     }
 
     public void addMagicResistance(double value) {

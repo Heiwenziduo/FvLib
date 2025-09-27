@@ -20,14 +20,24 @@ import static com.github.heiwenziduo.fvlib.library.api.FvDamageType.PURE;
  * <p><span style="color:f28383">Waring:&nbsp;</span>every class NOT in library folder will be changing destructively. Make sure you are using the right dependencies</p>
  */
 public class FvUtil {
-    /// get time-lock ticks remain on an entity
+    /// get time-lock ticks remain on a living
     public static int getTimeLock(LivingEntity living) {
         return ((LivingEntityMixinAPI) living).FvLib$getTimeLockManager().getTimeLock();
     }
 
-    /// set ticks to time-lock an entity
+    /// set ticks to time-lock a living
     public static void setTimeLock(LivingEntity living, int tick) {
         ((LivingEntityMixinAPI) living).FvLib$getTimeLockManager().setTimeLock(tick);
+    }
+
+    /// check if a living has any BKB effects
+    public static boolean hasBKB(LivingEntity living) {
+        return ((LivingEntityMixinAPI) living).FvLib$getBKBEffectManager().hasBKB();
+    }
+
+    /// set a living's BKB status
+    public static void setBKB(LivingEntity living, boolean bkb) {
+        ((LivingEntityMixinAPI) living).FvLib$getBKBEffectManager().setBKB(bkb);
     }
 
     /// Damage Type: &nbsp;<span style="color: 47afff;">MAGIC</span>

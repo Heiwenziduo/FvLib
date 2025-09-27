@@ -1,5 +1,6 @@
 package com.github.heiwenziduo.fvlib.mixin;
 
+import com.github.heiwenziduo.fvlib.api.manager.BKBEffectManager;
 import com.github.heiwenziduo.fvlib.api.manager.TimeLockManager;
 import com.github.heiwenziduo.fvlib.api.mixin.LivingEntityMixinAPI;
 import com.github.heiwenziduo.fvlib.initializer.FvAttributes;
@@ -80,14 +81,26 @@ public abstract class LivingEntityMixin extends Entity implements LivingEntityMi
 
     @Unique
     private static final EntityDataAccessor<Integer> DATA_TIME_LOCK = SynchedEntityData.defineId(LivingEntity.class, EntityDataSerializers.INT);
+    @Unique
+    private static final EntityDataAccessor<Boolean> DATA_BKB_EFFECT = SynchedEntityData.defineId(LivingEntity.class, EntityDataSerializers.BOOLEAN);
 
     @Unique
     protected TimeLockManager FvLib$timeLockManager = new TimeLockManager();
 
     @Unique
+    protected BKBEffectManager FvLib$BKBEffectManager = new BKBEffectManager();
+
+
+    @Unique
     @Override
     public TimeLockManager FvLib$getTimeLockManager() {
         return FvLib$timeLockManager;
+    }
+
+    @Unique
+    @Override
+    public BKBEffectManager FvLib$getBKBEffectManager() {
+        return FvLib$BKBEffectManager;
     }
 
     @Inject(method = "createLivingAttributes", at = @At("RETURN"), cancellable = true)
@@ -98,20 +111,22 @@ public abstract class LivingEntityMixin extends Entity implements LivingEntityMi
     @Inject(method = "defineSynchedData", at = @At("HEAD"))
     public void defineSynchedData(CallbackInfo ci) {
         entityData.define(DATA_TIME_LOCK, 0);
+        entityData.define(DATA_BKB_EFFECT, false);
     }
 
     /// 被时间锁定的活物不能行动
     @Inject(method = "tick", at = @At("HEAD"), cancellable = true)
     public void livingTickMixin(CallbackInfo ci) {
-        int timeLockSync;
         if (!level().isClientSide) {
             // 服务端发起同步
-            timeLockSync = FvLib$timeLockManager.getTimeLock();
-            entityData.set(DATA_TIME_LOCK, timeLockSync);
+            entityData.set(DATA_TIME_LOCK, FvLib$timeLockManager.getTimeLock());
+            entityData.set(DATA_BKB_EFFECT, FvLib$BKBEffectManager.hasBKB());
         } else {
             // 客户端接收同步的数据
-            timeLockSync = entityData.get(DATA_TIME_LOCK);
+            int timeLockSync = entityData.get(DATA_TIME_LOCK);
+            boolean bkbSync = entityData.get(DATA_BKB_EFFECT);
             FvLib$timeLockManager.setTimeLock(timeLockSync);
+            FvLib$BKBEffectManager.setBKB(bkbSync);
         }
 
 
@@ -120,6 +135,8 @@ public abstract class LivingEntityMixin extends Entity implements LivingEntityMi
         FvLib$handleLifeRegen();
         FvLib$handleStun(ci);
         FvLib$handleHex();
+
+        FvLib$BKBEffectManager.setBKB(false); /// 执行位置在{@link LivingEntity#tickEffects}之前
     }
 
     /// 纯粹伤害不会被减免
@@ -159,12 +176,9 @@ public abstract class LivingEntityMixin extends Entity implements LivingEntityMi
     public void affectEffectWhenBKB(MobEffectInstance pEffectInstance, CallbackInfoReturnable<Boolean> cir) {
         MobEffect toApply = pEffectInstance.getEffect();
         if (toApply.getCategory() != MobEffectCategory.HARMFUL) return;
+        //System.out.println("affectEffectWhenBKBClient: " + level().isClientSide + "   bkb? " + entityData.get(DATA_BKB_EFFECT)); // 有BKB时都是服务端, 无BKB时两端都有 ?
 
-        // todo: 如果有其他effect要继承bkb怎么写?
-        // 也许可以换成 attribute?
-        var instance = getEffect(FvEffects.CLASSIC_BKB.get());
-        if (instance != null) {
-            MobEffect bkb = instance.getEffect();
+        if (FvLib$BKBEffectManager.hasBKB()) {
             // 默认所有传统效果都是不无视魔免的
             if (toApply instanceof FvHookedEffect hooked) {
                 if (hooked.isPierceImmunity()) return; // 无视魔免的效果仍可施加
