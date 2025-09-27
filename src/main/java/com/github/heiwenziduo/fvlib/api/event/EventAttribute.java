@@ -9,14 +9,25 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 import static com.github.heiwenziduo.fvlib.library.FvUtil.isGenericMagic;
+import static com.github.heiwenziduo.fvlib.library.FvUtil.isGenericPhysic;
+import static com.github.heiwenziduo.fvlib.library.api.FvAttribute.EVASION;
 import static com.github.heiwenziduo.fvlib.library.api.FvAttribute.MAGIC_RESISTANCE;
+import static java.lang.Math.random;
 
 @Mod.EventBusSubscriber(modid = FvLib.ModId, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class EventAttribute {
+
     @SubscribeEvent(priority = EventPriority.HIGH)
     static void evasion(LivingAttackEvent event) {
         // 闪避物理伤害
-
+        if (isGenericPhysic(event.getSource())){
+            boolean result = random() < event.getEntity().getAttributeValue(EVASION);
+            if (result) {
+                System.out.println("evasion");
+                event.setCanceled(true);
+                // 加点特效...
+            }
+        }
     }
 
     @SubscribeEvent

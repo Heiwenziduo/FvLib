@@ -40,6 +40,12 @@ public class FvUtil {
         ((LivingEntityMixinAPI) living).FvLib$getBKBEffectManager().setBKB(bkb);
     }
 
+    /// Damage Type: &nbsp;<span style="color: ff2556;">PHYSIC</span>
+    public static boolean isGenericPhysic(DamageSource damage) {
+        // as long as it does not bypassArmor...
+        return !damage.is(DamageTypeTags.BYPASSES_ARMOR) && !damage.is(DamageTypeTags.BYPASSES_INVULNERABILITY);
+    }
+
     /// Damage Type: &nbsp;<span style="color: 47afff;">MAGIC</span>
     public static boolean isGenericMagic(DamageSource damage) {
         // every source not PURE(generic pure XD) and have BYPASSES_ARMOR tag will be defined as magic
