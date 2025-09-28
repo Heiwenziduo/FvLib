@@ -17,14 +17,14 @@ public class FvAttributes {
     }
 
     public static final RegistryObject<Attribute> PASSIVE_REGEN = ATTRIBUTES.register("passive_regen",
-            () -> new RangedAttribute("attribute.fvlib.passive_regen", 0, 0, 299792458));
+            () -> new RangedAttribute("attribute.fvlib.passive_regen", 0, 0, 299792458).setSyncable(true));
 
     public static final RegistryObject<Attribute> MAGIC_RESISTANCE = ATTRIBUTES.register("magic_resistance",
-            () -> new ApproachLimitAttribute("attribute.fvlib.magic_resistance", 0, -100));
+            () -> new ApproachLimitAttribute("attribute.fvlib.magic_resistance", 0, -100).setSyncable(true));
 
     public static final RegistryObject<Attribute> STATUS_RESISTANCE = ATTRIBUTES.register("status_resistance",
-            () -> new ApproachLimitAttribute("attribute.fvlib.status_resistance", 0, -10));
+            () -> new ApproachLimitAttribute("attribute.fvlib.status_resistance", 0, -10).setSyncable(true));
 
     public static final RegistryObject<Attribute> EVASION = ATTRIBUTES.register("evasion",
-            () -> new ApproachLimitAttribute("attribute.fvlib.evasion", 0, 0));
+            () -> new ApproachLimitAttribute("attribute.fvlib.evasion", 0, 0).setSyncable(true));
 }
