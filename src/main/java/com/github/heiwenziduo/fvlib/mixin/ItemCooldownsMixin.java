@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
-import static com.github.heiwenziduo.fvlib.library.api.FvAttribute.ITEM_COOLDOWN_REDUCTION;
+import static com.github.heiwenziduo.fvlib.library.registry.FvAttribute.ITEM_COOLDOWN_REDUCTION;
 
 @Mixin(value = ItemCooldowns.class)
 public abstract class ItemCooldownsMixin implements ItemCooldownsMixinAPI {

@@ -1,4 +1,4 @@
-package com.github.heiwenziduo.fvlib.library.api;
+package com.github.heiwenziduo.fvlib.library.registry;
 
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;

@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import static com.github.heiwenziduo.fvlib.library.api.FvAttribute.ITEM_COOLDOWN_REDUCTION;
+import static com.github.heiwenziduo.fvlib.library.registry.FvAttribute.ITEM_COOLDOWN_REDUCTION;
 
 @Mixin(value = Player.class)
 public abstract class PlayerMixin extends LivingEntity implements PlayerMixinAPI {

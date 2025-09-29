@@ -4,6 +4,7 @@
   "attribute.fvlib.status_resistance": "Status Resistance",
   "attribute.fvlib.evasion": "Evasion",
   "attribute.fvlib.item_cooldown_reduction": "Items Cooldown Reduction",
+  "attribute.fvlib.lifesteal": "Lifesteal",
 
   "effect.fvlib.stun_classic": "Stun",
   "effect.fvlib.bkb_classic": "BKB"

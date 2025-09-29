@@ -2,6 +2,7 @@ package com.github.heiwenziduo.fvlib.initializer;
 
 import com.github.heiwenziduo.fvlib.FvLib;
 import com.github.heiwenziduo.fvlib.api.attribute.ApproachLimitAttribute;
+import com.github.heiwenziduo.fvlib.library.registry.FvAttribute;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.RangedAttribute;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -9,7 +10,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
-/// for outside usage, pls see {@link com.github.heiwenziduo.fvlib.library.api.FvAttribute}
+/// for outside usage, pls see {@link FvAttribute}
 public class FvAttributes {
     public static final DeferredRegister<Attribute> ATTRIBUTES = DeferredRegister.create(ForgeRegistries.ATTRIBUTES, FvLib.ModId);
     public static void register(IEventBus eventBus) {
@@ -30,4 +31,7 @@ public class FvAttributes {
 
     public static final RegistryObject<Attribute> ITEM_COOLDOWN_REDUCTION = ATTRIBUTES.register("item_cooldown_reduction",
             () -> new ApproachLimitAttribute("attribute.fvlib.item_cooldown_reduction", 0, -10).setSyncable(true));
+
+    public static final RegistryObject<Attribute> LIFESTEAL = ATTRIBUTES.register("lifesteal",
+            () -> new RangedAttribute("attribute.fvlib.lifesteal", 0, 0, 299792458).setSyncable(true));
 }

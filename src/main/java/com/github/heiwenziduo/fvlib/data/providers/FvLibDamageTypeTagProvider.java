@@ -9,7 +9,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.CompletableFuture;
 
-import static com.github.heiwenziduo.fvlib.library.api.FvDamageType.PURE;
+import static com.github.heiwenziduo.fvlib.library.registry.FvDamageType.PURE;
 import static net.minecraft.tags.DamageTypeTags.*;
 
 

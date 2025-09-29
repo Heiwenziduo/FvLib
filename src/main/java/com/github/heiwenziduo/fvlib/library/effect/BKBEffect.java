@@ -7,7 +7,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.event.entity.living.MobEffectEvent;
 
 import static com.github.heiwenziduo.fvlib.library.FvUtil.dispel;
-import static com.github.heiwenziduo.fvlib.library.api.FvAttribute.MAGIC_RESISTANCE;
+import static com.github.heiwenziduo.fvlib.library.registry.FvAttribute.MAGIC_RESISTANCE;
 import static com.github.heiwenziduo.fvlib.util.FvUtilInternal.setBKB;
 import static net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation.ADDITION;
 import static net.minecraft.world.entity.ai.attributes.Attributes.KNOCKBACK_RESISTANCE;

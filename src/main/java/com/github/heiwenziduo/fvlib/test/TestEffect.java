@@ -1,15 +1,13 @@
 package com.github.heiwenziduo.fvlib.test;
 
 import com.github.heiwenziduo.fvlib.library.effect.BKBEffect;
-import com.github.heiwenziduo.fvlib.library.event.LivingEvasionCheckEvent;
+import com.github.heiwenziduo.fvlib.library.event.living.EvasionCheckEvent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-
-import static java.lang.Math.random;
 
 /// 测试用
 @Mod.EventBusSubscriber
@@ -37,7 +35,7 @@ public class TestEffect extends BKBEffect {
     }
 
     @SubscribeEvent
-    public static void onEvasion(LivingEvasionCheckEvent event) {
+    public static void onEvasion(EvasionCheckEvent event) {
         //client: false
 //        System.out.println("onEvasion: " + event);
 //        System.out.println("client?: " + event.getEntity().level().isClientSide);

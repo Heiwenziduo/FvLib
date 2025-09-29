@@ -1,4 +1,4 @@
-package com.github.heiwenziduo.fvlib.library.event;
+package com.github.heiwenziduo.fvlib.library.event.living;
 
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
@@ -9,10 +9,10 @@ import net.minecraftforge.eventbus.api.Cancelable;
 /// <br>
 /// This event does not have a result. {@link HasResult}
 @Cancelable
-public class LivingEvasionCheckEvent extends LivingEvent {
+public class EvasionCheckEvent extends LivingEvent {
     private final DamageSource source;
 
-    public LivingEvasionCheckEvent(LivingEntity entity, DamageSource pSource) {
+    public EvasionCheckEvent(LivingEntity entity, DamageSource pSource) {
         super(entity);
         source = pSource;
     }

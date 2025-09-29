@@ -1,9 +1,9 @@
-package com.github.heiwenziduo.fvlib.library.api;
+package com.github.heiwenziduo.fvlib.library.registry;
 
 import com.github.heiwenziduo.fvlib.initializer.FvAttributes;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 
-/// fvlib注册的新属性
+/// fvlib注册的新属性, 大部分都注册到了LivingEntity上
 public class FvAttribute {
     /// 被动回复
     public static final Attribute PASSIVE_REGEN = FvAttributes.PASSIVE_REGEN.get();
@@ -17,6 +17,9 @@ public class FvAttribute {
     /// 通用物理闪避, 上限为1, 只有[ADDITION]运算符会生效
     public static final Attribute EVASION = FvAttributes.EVASION.get();
 
-    /// 物品冷却缩减(仅原版冷却逻辑), 上限为1, 只有[ADDITION]运算符会生效
+    /// 物品冷却缩减(仅原版冷却逻辑), 上限为1, 只有[ADDITION]运算符会生效 <br> 仅玩家
     public static final Attribute ITEM_COOLDOWN_REDUCTION = FvAttributes.ITEM_COOLDOWN_REDUCTION.get();
+
+    /// 生命偷取(物理)(税后), 0.3代表30%
+    public static final Attribute LIFESTEAL = FvAttributes.LIFESTEAL.get();
 }

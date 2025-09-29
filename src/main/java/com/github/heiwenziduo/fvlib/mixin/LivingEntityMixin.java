@@ -34,8 +34,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import static com.github.heiwenziduo.fvlib.library.api.FvAttribute.*;
-import static com.github.heiwenziduo.fvlib.library.api.FvDamageType.PURE;
+import static com.github.heiwenziduo.fvlib.library.registry.FvAttribute.*;
+import static com.github.heiwenziduo.fvlib.library.registry.FvDamageType.PURE;
 
 
 @Mixin(value = LivingEntity.class)
@@ -104,7 +104,7 @@ public abstract class LivingEntityMixin extends Entity implements LivingEntityMi
 
     @Inject(method = "createLivingAttributes", at = @At("RETURN"), cancellable = true)
     private static void moreLivingAttributes(CallbackInfoReturnable<AttributeSupplier.Builder> cir) {
-        cir.setReturnValue(cir.getReturnValue().add(MAGIC_RESISTANCE).add(STATUS_RESISTANCE).add(PASSIVE_REGEN).add(EVASION));
+        cir.setReturnValue(cir.getReturnValue().add(MAGIC_RESISTANCE).add(STATUS_RESISTANCE).add(PASSIVE_REGEN).add(EVASION).add(LIFESTEAL));
     }
 
     @Inject(method = "defineSynchedData", at = @At("HEAD"))

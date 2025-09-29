@@ -13,7 +13,7 @@ import net.minecraft.world.entity.LivingEntity;
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 
-import static com.github.heiwenziduo.fvlib.library.api.FvDamageType.PURE;
+import static com.github.heiwenziduo.fvlib.library.registry.FvDamageType.PURE;
 
 /**
  * <p>*welcum to TimeZone*</p>

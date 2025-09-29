@@ -7,7 +7,7 @@ import net.minecraft.world.damagesource.DamageScaling;
 import net.minecraft.world.damagesource.DamageType;
 
 import static com.github.heiwenziduo.fvlib.FvLib.ModId;
-import static com.github.heiwenziduo.fvlib.library.api.FvDamageType.PURE;
+import static com.github.heiwenziduo.fvlib.library.registry.FvDamageType.PURE;
 
 public class FvLibDamageTypeProvider implements RegistrySetBuilder.RegistryBootstrap<DamageType> {
 
