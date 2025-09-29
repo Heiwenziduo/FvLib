@@ -1,13 +1,13 @@
 package com.github.heiwenziduo.fvlib.api.event;
 
 import com.github.heiwenziduo.fvlib.FvLib;
-import com.github.heiwenziduo.fvlib.library.effect.FvHookedEffect;
-import com.github.heiwenziduo.fvlib.library.effect.hook.*;
-import net.minecraft.world.damagesource.DamageSource;
+import com.github.heiwenziduo.fvlib.library.effect.hook.EffectAddedHook;
+import com.github.heiwenziduo.fvlib.library.effect.hook.EffectApplicableHook;
+import com.github.heiwenziduo.fvlib.library.effect.hook.EffectDispelledHook;
+import com.github.heiwenziduo.fvlib.library.effect.hook.EffectExpiredHook;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.MobEffectEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;

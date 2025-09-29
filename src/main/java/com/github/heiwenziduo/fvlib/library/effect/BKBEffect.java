@@ -1,13 +1,10 @@
 package com.github.heiwenziduo.fvlib.library.effect;
 
 import com.github.heiwenziduo.fvlib.library.api.DispelType;
-import com.github.heiwenziduo.fvlib.library.effect.hook.*;
+import com.github.heiwenziduo.fvlib.library.effect.hook.EffectAddedHook;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraftforge.event.entity.living.MobEffectEvent;
-
-import java.util.UUID;
 
 import static com.github.heiwenziduo.fvlib.library.FvUtil.dispel;
 import static com.github.heiwenziduo.fvlib.library.api.FvAttribute.MAGIC_RESISTANCE;

@@ -2,9 +2,7 @@ package com.github.heiwenziduo.fvlib.mixin;
 
 import com.github.heiwenziduo.fvlib.api.mixin.ItemCooldownsMixinAPI;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemCooldowns;
-import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;

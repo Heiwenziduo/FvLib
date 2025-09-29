@@ -3,8 +3,6 @@ package com.github.heiwenziduo.fvlib.mixin;
 import com.github.heiwenziduo.fvlib.api.manager.BKBEffectManager;
 import com.github.heiwenziduo.fvlib.api.manager.TimeLockManager;
 import com.github.heiwenziduo.fvlib.api.mixin.LivingEntityMixinAPI;
-import com.github.heiwenziduo.fvlib.initializer.FvAttributes;
-import com.github.heiwenziduo.fvlib.initializer.FvEffects;
 import com.github.heiwenziduo.fvlib.library.effect.FvHookedEffect;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
