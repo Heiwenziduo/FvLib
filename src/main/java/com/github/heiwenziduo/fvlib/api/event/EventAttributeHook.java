@@ -1,10 +1,11 @@
 package com.github.heiwenziduo.fvlib.api.event;
 
 import com.github.heiwenziduo.fvlib.FvLib;
+import com.github.heiwenziduo.fvlib.network.FvPacketHandler;
+import com.github.heiwenziduo.fvlib.network.packet.ClientboundEvasionEffect;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
@@ -42,16 +43,19 @@ public class EventAttributeHook {
 
     @SubscribeEvent(priority = EventPriority.HIGH)
     static void evasion(LivingAttackEvent event) {
+        LivingEntity living = event.getEntity();
+        // this event emits on both side
+        if (living.level().isClientSide) return;
+
         // 闪避物理伤害
         if (isGenericPhysic(event.getSource())){
-            boolean result1 = random() < event.getEntity().getAttributeValue(EVASION);
+            boolean result1 = random() < living.getAttributeValue(EVASION);
             // 抛出一个躲避事件, 判断必中效果
-            // client: false
-            boolean result2 = result1 && FvEventHooks.onLivingEvasionCheck(event.getEntity(), event.getSource());
+            boolean result2 = result1 && FvEventHooks.onLivingEvasionCheck(living, event.getSource());
             if (result2) {
                 event.setCanceled(true);
-                // 加点特效...
-                FvEventHooks.onLivingEvasion(event.getEntity());
+                FvEventHooks.onLivingEvasion(living);
+                FvPacketHandler.sendToPlayersTrackingEntity(new ClientboundEvasionEffect("evasion: " + event.getAmount()), living, true);
             }
         }
     }

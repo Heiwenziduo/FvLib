@@ -1,6 +1,7 @@
 package com.github.heiwenziduo.fvlib;
 
 import com.github.heiwenziduo.fvlib.initializer.FvAttributes;
+import com.github.heiwenziduo.fvlib.initializer.FvCommonSetup;
 import com.github.heiwenziduo.fvlib.initializer.FvEffects;
 import com.github.heiwenziduo.fvlib.test.TestThings;
 import net.minecraft.resources.ResourceLocation;
@@ -15,11 +16,14 @@ public class FvLib {
 
     public FvLib(FMLJavaModLoadingContext context) {
         IEventBus eventBus = context.getModEventBus();
+        eventBus.addListener(FvCommonSetup::onFMLSetup);
 
         FvAttributes.register(eventBus);
         FvEffects.register(eventBus);
 
+        // ==========================
         TestThings.register(eventBus);
+        // ==========================
 
         MinecraftForge.EVENT_BUS.register(this);
     }
