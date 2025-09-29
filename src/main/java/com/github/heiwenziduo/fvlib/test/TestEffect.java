@@ -1,13 +1,17 @@
 package com.github.heiwenziduo.fvlib.test;
 
 import com.github.heiwenziduo.fvlib.library.effect.BKBEffect;
-import com.github.heiwenziduo.fvlib.library.effect.hook.DamageTakenHook;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
+import net.minecraftforge.event.entity.living.LivingDamageEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 
 /// 测试用
-public class TestEffect extends BKBEffect implements DamageTakenHook {
+@Mod.EventBusSubscriber
+public class TestEffect extends BKBEffect {
     public static final float MagicResistance2 = 0.5f;
 
     public TestEffect() {
@@ -15,19 +19,19 @@ public class TestEffect extends BKBEffect implements DamageTakenHook {
     }
 
     //=============================================test
-    @Override
-    public void onDamageTaken(LivingAttackEvent event) {
+
+    /// static listener to registry a "DamageTakenHook"
+    @SubscribeEvent(priority = EventPriority.LOW)
+    public static void onDamageTaken(LivingAttackEvent event) {
+        // always server
         Entity attacker = event.getSource().getEntity();
         if (attacker instanceof LivingEntity){
-
-
             LivingEntity living = event.getEntity();
             living.level();
 
-            System.out.println("TestEffect: onDamageTaken " + event.getAmount());
-            System.out.println("source: " + event.getSource());
-            System.out.println("Client: " + living.level().isClientSide);   // always server
         }
+        //System.out.println("TestEffect: onDamageTaken " + event.getAmount());
+        //System.out.println("source: " + event.getSource());
     }
 
 }

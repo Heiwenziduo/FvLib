@@ -16,28 +16,28 @@ import net.minecraftforge.fml.common.Mod;
 @Mod.EventBusSubscriber(modid = FvLib.ModId, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class EventEffectHook {
 
-    @SubscribeEvent(priority = EventPriority.LOW)
-    static void livingAttack(LivingAttackEvent event) {
-        LivingEntity entity = event.getEntity();
-
-        // client side always returns false, so this should be fine?
-        if (entity.level().isClientSide() || entity.isDeadOrDying()) {
-            return;
-        }
-        // I cannot think of a reason to run when invulnerable
-        DamageSource source = event.getSource();
-        if (entity.isInvulnerableTo(source)) {
-            return;
-        }
-
-        for (MobEffectInstance instance : entity.getActiveEffects()){
-            MobEffect effect = instance.getEffect();
-            if (effect instanceof DamageTakenHook) {
-                ((DamageTakenHook) effect).onDamageTaken(event);
-            }
-        }
-
-    }
+//    @SubscribeEvent(priority = EventPriority.LOW)
+//    static void livingAttack(LivingAttackEvent event) {
+//        LivingEntity entity = event.getEntity();
+//
+//        // client side always returns false, so this should be fine?
+//        if (entity.level().isClientSide() || entity.isDeadOrDying()) {
+//            return;
+//        }
+//        // I cannot think of a reason to run when invulnerable
+//        DamageSource source = event.getSource();
+//        if (entity.isInvulnerableTo(source)) {
+//            return;
+//        }
+//
+//        for (MobEffectInstance instance : entity.getActiveEffects()){
+//            MobEffect effect = instance.getEffect();
+//            if (effect instanceof DamageTakenHook) {
+//                ((DamageTakenHook) effect).onDamageTaken(event);
+//            }
+//        }
+//
+//    }
 
     @SubscribeEvent
     static void effectsApplyCheck(MobEffectEvent.Applicable event) {
