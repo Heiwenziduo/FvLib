@@ -1,6 +1,7 @@
 package com.github.heiwenziduo.fvlib.api.event;
 
 import com.github.heiwenziduo.fvlib.FvLib;
+import com.github.heiwenziduo.fvlib.library.event.FvEventHooks;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -18,17 +19,20 @@ import static com.github.heiwenziduo.fvlib.util.FvUtilInternal.setEffectDuration
 import static java.lang.Math.random;
 
 @Mod.EventBusSubscriber(modid = FvLib.ModId, bus = Mod.EventBusSubscriber.Bus.FORGE)
-public class EventAttribute {
+public class EventAttributeHook {
 
     @SubscribeEvent(priority = EventPriority.HIGH)
     static void evasion(LivingAttackEvent event) {
         // 闪避物理伤害
         if (isGenericPhysic(event.getSource())){
-            boolean result = random() < event.getEntity().getAttributeValue(EVASION);
-            // todo: if (result), 抛出一个躲避事件, 判断必中效果
-            if (result) {
+            boolean result1 = random() < event.getEntity().getAttributeValue(EVASION);
+            // 抛出一个躲避事件, 判断必中效果
+            // client: false
+            boolean result2 = result1 && FvEventHooks.onLivingEvasionCheck(event.getEntity(), event.getSource());
+            if (result2) {
                 event.setCanceled(true);
                 // 加点特效...
+                FvEventHooks.onLivingEvasion(event.getEntity());
             }
         }
     }

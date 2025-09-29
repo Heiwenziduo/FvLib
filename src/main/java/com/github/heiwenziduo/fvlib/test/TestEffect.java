@@ -1,12 +1,15 @@
 package com.github.heiwenziduo.fvlib.test;
 
 import com.github.heiwenziduo.fvlib.library.effect.BKBEffect;
+import com.github.heiwenziduo.fvlib.library.event.LivingEvasionCheckEvent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+
+import static java.lang.Math.random;
 
 /// 测试用
 @Mod.EventBusSubscriber
@@ -31,6 +34,17 @@ public class TestEffect extends BKBEffect {
         }
         //System.out.println("TestEffect: onDamageTaken " + event.getAmount());
         //System.out.println("source: " + event.getSource());
+    }
+
+    @SubscribeEvent
+    public static void onEvasion(LivingEvasionCheckEvent event) {
+        //client: false
+//        System.out.println("onEvasion: " + event);
+//        System.out.println("client?: " + event.getEntity().level().isClientSide);
+//        if (random() < .5) {
+//            event.setCanceled(true);
+//            System.out.println("============================= no evasion");
+//        }
     }
 
 }
