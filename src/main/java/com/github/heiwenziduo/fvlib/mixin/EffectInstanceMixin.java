@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.Shadow;
 
 /// just for test
 @Mixin(value = MobEffectInstance.class)
-public class EffectInstanceMixin implements EffectInstanceMixinAPI {
+public abstract class EffectInstanceMixin implements EffectInstanceMixinAPI {
 
     @Shadow private int duration;
 

@@ -19,7 +19,7 @@ public class FvLib {
         FvAttributes.register(eventBus);
         FvEffects.register(eventBus);
 
-        //TestThings.register(eventBus);
+        TestThings.register(eventBus);
 
         MinecraftForge.EVENT_BUS.register(this);
     }

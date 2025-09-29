@@ -36,6 +36,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import static com.github.heiwenziduo.fvlib.library.api.FvAttribute.*;
 import static com.github.heiwenziduo.fvlib.library.api.FvDamageType.PURE;
 
 
@@ -105,7 +106,7 @@ public abstract class LivingEntityMixin extends Entity implements LivingEntityMi
 
     @Inject(method = "createLivingAttributes", at = @At("RETURN"), cancellable = true)
     private static void moreLivingAttributes(CallbackInfoReturnable<AttributeSupplier.Builder> cir) {
-        cir.setReturnValue(cir.getReturnValue().add(FvAttributes.MAGIC_RESISTANCE.get()).add(FvAttributes.STATUS_RESISTANCE.get()).add(FvAttributes.PASSIVE_REGEN.get()).add(FvAttributes.EVASION.get()));
+        cir.setReturnValue(cir.getReturnValue().add(MAGIC_RESISTANCE).add(STATUS_RESISTANCE).add(PASSIVE_REGEN).add(EVASION));
     }
 
     @Inject(method = "defineSynchedData", at = @At("HEAD"))
@@ -255,7 +256,7 @@ public abstract class LivingEntityMixin extends Entity implements LivingEntityMi
     @Unique
     private void FvLib$handleLifeRegen() {
         if (!level().isClientSide && tickCount % 5 == 0){
-            double regen = attributes.getValue(FvAttributes.PASSIVE_REGEN.get());
+            double regen = attributes.getValue(PASSIVE_REGEN);
             // heal方法会调用回血事件, PASSIVE_REGEN受治疗增强影响
             heal((float) (regen / 4));
         }

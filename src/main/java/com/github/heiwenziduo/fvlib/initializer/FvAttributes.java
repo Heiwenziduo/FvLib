@@ -27,4 +27,7 @@ public class FvAttributes {
 
     public static final RegistryObject<Attribute> EVASION = ATTRIBUTES.register("evasion",
             () -> new ApproachLimitAttribute("attribute.fvlib.evasion", 0, 0).setSyncable(true));
+
+    public static final RegistryObject<Attribute> ITEM_COOLDOWN_REDUCTION = ATTRIBUTES.register("item_cooldown_reduction",
+            () -> new ApproachLimitAttribute("attribute.fvlib.item_cooldown_reduction", 0, -10).setSyncable(true));
 }

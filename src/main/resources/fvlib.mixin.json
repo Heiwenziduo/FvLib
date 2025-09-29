@@ -7,9 +7,11 @@
   "refmap": "fvlib.mixin.refmap.json",
   "mixins": [
     "AttributeInstanceMixin",
+    "EffectInstanceMixin",
+    "ItemCooldownsMixin",
     "LivingEntityMixin",
     "PlayerMixin",
-    "EffectInstanceMixin"
+    "ServerPlayerMixin"
   ],
   "client": [],
   "server": [],
