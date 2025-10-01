@@ -13,7 +13,9 @@
     "PlayerMixin",
     "ServerPlayerMixin"
   ],
-  "client": [],
+  "client": [
+    "accessor.LivingEntityRendererAccessor"
+  ],
   "server": [],
   "injectors": {
     "defaultRequire": 1

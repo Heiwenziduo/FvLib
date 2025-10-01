@@ -13,6 +13,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Supplier;
 
+import static java.lang.Math.PI;
 import static java.lang.Math.random;
 
 public class ClientboundEvasionEffect implements BoundedNetworkPacket {
@@ -62,6 +63,12 @@ public class ClientboundEvasionEffect implements BoundedNetworkPacket {
     public static Vec3 evasionDirect(@NotNull LivingEntity living, DamageSource source) {
         Entity cause = source.getDirectEntity();
         if (cause == null) return new Vec3(random(), 0, random()).normalize();
-        return Vec3.directionFromRotation(new Vec2(0, cause.getYRot())).cross(new Vec3(0, 1, 0)).normalize();
+        int r = random() < .5 ? 1 : -1;
+        float yRadius = (float) ((random() - 1) * PI / 3); // 随机偏移
+        return Vec3.directionFromRotation(new Vec2(0, cause.getYRot()))
+                .cross(new Vec3(0, 1, 0))
+//                .scale(r)
+//                .yRot(yRadius)
+                .normalize();
     }
 }

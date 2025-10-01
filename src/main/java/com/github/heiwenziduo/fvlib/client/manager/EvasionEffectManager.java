@@ -1,7 +1,9 @@
 package com.github.heiwenziduo.fvlib.client.manager;
 
+import com.github.heiwenziduo.fvlib.mixin.accessor.LivingEntityRendererAccessor;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Axis;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -10,6 +12,7 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
+import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -19,6 +22,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderLivingEvent;
 import org.joml.Matrix4f;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -44,7 +48,6 @@ public class EvasionEffectManager {
 
     // 开始一个动画
     public void startEffect(int entityId, Vec3 slideDirect) {
-        System.out.println("startEffect: " + slideDirect);
         activeAnimations.put(entityId, new EvasionAnimation(Minecraft.getInstance().level.getGameTime(), slideDirect));
     }
 
@@ -107,28 +110,24 @@ public class EvasionEffectManager {
 
     /// render evasion phantom
     public static void renderEvasionPhantom(RenderLivingEvent.Post<LivingEntity, ?> event, EvasionAnimation animation, float partialTicks) {
-        LivingEntity entity = event.getEntity();
+        LivingEntity living = event.getEntity();
         LivingEntityRenderer<LivingEntity, ?> renderer = event.getRenderer();
         PoseStack poseStack = event.getPoseStack();
         MultiBufferSource bufferSource = event.getMultiBufferSource();
         int packedLight = event.getPackedLight();
 
         poseStack.pushPose();
-
-        // 1. 计算动画进度和偏移
+        Vec3 direction = animation.slideDirect();
         float progress = animation.getProgress(partialTicks);
         float slideDistance = 1.5f; // 残影滑动的总距离
         float currentOffset = Mth.lerp(progress, 0, slideDistance); // 从0插值到最大距离
 
-        // 2. 计算侧向向量
-        Vec3 direction = animation.slideDirect();
-
-        // 3. 应用位移
+        // 应用位移
         poseStack.translate(direction.x * currentOffset, 0, direction.z * currentOffset);
 
-        // 4. 设置半透明效果
+        // 设置半透明效果
         // 我们可以通过一个特殊的RenderType来实现。或者一个更简单但效果稍差的方法是直接重载颜色
-        float alpha = 1.0f - progress; // 残影随着动画进度逐渐消失
+        float alpha = (1.0f - progress) * 0.7f; // 残影随着动画进度逐渐消失
         int red = 255, green = 255, blue = 255;
 
         // 核心：使用一个封装的MultiBufferSource来修改顶点数据, 使其半透明
@@ -137,12 +136,30 @@ public class EvasionEffectManager {
         // 更好的方法是找到半透明的RenderType并让模型使用它来渲染
         // RenderType.entityTranslucent(renderer.getTextureLocation(entity))
 
-        // 一个简单有效的方法是获取实体的模型, 直接渲染它
+        // event#getRenderer#getModel
         EntityModel<LivingEntity> model = renderer.getModel();
-        // 准备渲染半透明模型
-        VertexConsumer vertexconsumer = bufferSource.getBuffer(RenderType.entityTranslucent(renderer.getTextureLocation(entity)));
-        model.renderToBuffer(poseStack, vertexconsumer, packedLight, LivingEntityRenderer.getOverlayCoords(entity, 0.0f), 1.0f, 1.0f, 1.0f, alpha);
 
+        // 直接渲染出的模型是倒栽葱的...
+        poseStack.translate(0, living.getBbHeight() / 2, 0);
+        poseStack.mulPose(Axis.ZP.rotationDegrees(180));
+        poseStack.mulPose(Axis.YP.rotationDegrees(-1 * living.getYRot()));
+
+        // 准备渲染半透明模型
+        VertexConsumer vertexconsumer = bufferSource.getBuffer(RenderType.entityTranslucent(renderer.getTextureLocation(living)));
+        model.renderToBuffer(poseStack, vertexconsumer, packedLight, LivingEntityRenderer.getOverlayCoords(living, 0.0f), 1.0f, 1.0f, 1.0f, alpha);
+
+        //todo: 渲染生物layer(如玩家盔甲)
+//        List<RenderLayer<LivingEntity, EntityModel<LivingEntity>>> layers =
+//                (List) ((LivingEntityRendererAccessor) renderer).getLayers();
+//        for (RenderLayer<LivingEntity, EntityModel<LivingEntity>> layer : layers) {
+//            layer.render(poseStack, translucentBuffer, packedLight, entity,
+//                    animation.capturedLimbSwing,
+//                    animation.capturedLimbSwingAmount,
+//                    partialTicks, // 注意这里用实时的partialTicks
+//                    animation.capturedAgeInTicks,
+//                    animation.capturedNetHeadYaw,
+//                    animation.capturedHeadPitch);
+//        }
 
         poseStack.popPose();
     }
