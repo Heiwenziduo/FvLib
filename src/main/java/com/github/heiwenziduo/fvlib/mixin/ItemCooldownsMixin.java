@@ -18,7 +18,7 @@ public abstract class ItemCooldownsMixin implements ItemCooldownsMixinAPI {
     @Unique
     public ItemCooldowns setFvLib$playerReference(Player player) {
         fvLib$playerReference = player;
-        // 下面这行会导致游戏崩溃: 载入世界时 "玩家实体初始化时gameProfile为null，导致在调用getName()方法时出现空指针异常"
+        // 下面这行会导致游戏崩溃: 载入世界时 "玩家实体初始化时gameProfile为null, 导致在调用getName()方法时出现空指针异常"
         // System.out.println("setFvLib$playerReference:    " + player);
         return (ItemCooldowns) (Object) this;
     }

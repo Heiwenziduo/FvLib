@@ -14,6 +14,7 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
+import static com.github.heiwenziduo.fvlib.client.manager.EvasionEffectManager.renderEvasionPhantom;
 import static com.github.heiwenziduo.fvlib.client.manager.EvasionEffectManager.renderMissText;
 
 @Mod.EventBusSubscriber(modid = FvLib.ModId, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
@@ -37,7 +38,7 @@ public class FvClientSetupForge {
         EvasionEffectManager.getInstance().getAnimation(entityId).ifPresent(animation -> {
             float partialTicks = event.getPartialTick();
             PoseStack poseStack = event.getPoseStack();
-            //renderEvasionPhantom(event, animation, partialTicks);
+            renderEvasionPhantom(event, animation, partialTicks);
             renderMissText(entity, poseStack, event.getMultiBufferSource(), event.getPackedLight(), animation, partialTicks);
         });
     }
