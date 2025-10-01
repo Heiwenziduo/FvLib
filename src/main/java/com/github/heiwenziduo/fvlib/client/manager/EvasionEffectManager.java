@@ -41,9 +41,11 @@ public class EvasionEffectManager {
     }
 
     /// 单次动画时长(tick)
-    private static final int ANIM_DURATION_TICKS = 8;
+    private static final int ANIM_DURATION_TICKS = 6;
     /// 动画实例数
     private static final int ANIM_INSTANCE_NUMBER = 4;
+    /// 残影滑行距离
+    private static final float SLIDE_DISTANCE = 0.2f;
 
     /// <span color="f44">NOTE</span>: ArrayListMultimap is not threadsafe when any concurrent operations update the multimap.
     private final Multimap<Integer, EvasionAnimation> activeAnim = ArrayListMultimap.create();
@@ -128,15 +130,15 @@ public class EvasionEffectManager {
         poseStack.pushPose();
         Vec3 direction = animation.slideDirect();
         float progress = animation.getProgress(partialTicks);
-        float slideDistance = 1.5f; // 残影滑动的总距离
-        float currentOffset = Mth.lerp(progress, 0, slideDistance); // 从0插值到最大距离
+        float currentOffset = progress > 0.5 ?
+                Mth.lerp(progress * 2, 0, SLIDE_DISTANCE) : Mth.lerp((1 - progress) * 2, 0, SLIDE_DISTANCE);
 
         // 应用位移
         poseStack.translate(direction.x * currentOffset, 0, direction.z * currentOffset);
 
         // 设置半透明效果
         // 我们可以通过一个特殊的RenderType来实现。或者一个更简单但效果稍差的方法是直接重载颜色
-        float alpha = (1.0f - progress) * 0.7f; // 残影随着动画进度逐渐消失
+        float alpha = 0.1f + (1.0f - progress) * 0.4f; // 残影随着动画进度逐渐消失
         int red = 255, green = 255, blue = 255;
 
         // 核心：使用一个封装的MultiBufferSource来修改顶点数据, 使其半透明

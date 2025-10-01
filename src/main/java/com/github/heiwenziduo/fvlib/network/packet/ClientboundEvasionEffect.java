@@ -67,8 +67,8 @@ public class ClientboundEvasionEffect implements BoundedNetworkPacket {
         float yRadius = (float) ((random() - 1) * PI / 3); // 随机偏移
         return Vec3.directionFromRotation(new Vec2(0, cause.getYRot()))
                 .cross(new Vec3(0, 1, 0))
-//                .scale(r)
-//                .yRot(yRadius)
+                .scale(r)
+                .yRot(yRadius)
                 .normalize();
     }
 }
