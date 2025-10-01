@@ -1,9 +1,9 @@
 package com.github.heiwenziduo.fvlib.client.manager;
 
-import com.github.heiwenziduo.fvlib.mixin.accessor.LivingEntityRendererAccessor;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Axis;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -12,7 +12,7 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
-import net.minecraft.client.renderer.entity.layers.RenderLayer;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -22,49 +22,58 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderLivingEvent;
 import org.joml.Matrix4f;
 
-import java.util.List;
-import java.util.Map;
+import java.util.Collection;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
 
-/// OnlyIn: [CLIENT] <br>
+import static com.github.heiwenziduo.fvlib.client.manager.FvRenderUtil.livingRenderOutsideRenderer;
+
+/// OnlyIn: <span color="f44">CLIENT</span><br>
 /// 客户端单例管理动画状态
 @OnlyIn(Dist.CLIENT)
 public class EvasionEffectManager {
     public static final EvasionEffectManager INSTANCE = new EvasionEffectManager();
+    public static EvasionEffectManager getInstance() {
+        return INSTANCE;
+    }
 
     public EvasionEffectManager() {
 
     }
 
-    private final Map<Integer, EvasionAnimation> activeAnimations = new ConcurrentHashMap<>();
+    /// 单次动画时长(tick)
+    private static final int ANIM_DURATION_TICKS = 8;
+    /// 动画实例数
+    private static final int ANIM_INSTANCE_NUMBER = 4;
 
-    // 动画总时长（ticks）
-    private static final int ANIMATION_DURATION_TICKS = 10; // 0.5秒
+    /// <span color="f44">NOTE</span>: ArrayListMultimap is not threadsafe when any concurrent operations update the multimap.
+    private final Multimap<Integer, EvasionAnimation> activeAnim = ArrayListMultimap.create();
 
-    public static EvasionEffectManager getInstance() {
-        return INSTANCE;
-    }
 
     // 开始一个动画
     public void startEffect(int entityId, Vec3 slideDirect) {
-        activeAnimations.put(entityId, new EvasionAnimation(Minecraft.getInstance().level.getGameTime(), slideDirect));
+        var collection = activeAnim.get(entityId);
+        if (collection.size() > ANIM_INSTANCE_NUMBER) {
+            // 存在动画过多时弹出最早一个
+            collection.stream().findFirst().ifPresent(collection::remove);
+        }
+        collection.add(new EvasionAnimation(Minecraft.getInstance().level.getGameTime(), slideDirect));
+
     }
 
     // 在ClientTickEvent中调用, 用于更新和移除过期的动画
     public void tick(ClientLevel level) {
         if (level == null) return;
         long currentTime = level.getGameTime();
-        activeAnimations.entrySet().removeIf(entry -> {
+        activeAnim.entries().removeIf(entry -> {
             Entity entity = level.getEntity(entry.getKey());
             // 如果实体不存在或动画已结束, 则移除
-            return entity == null || !entity.isAlive() || currentTime > entry.getValue().startTime + ANIMATION_DURATION_TICKS;
+            return entity == null || !entity.isAlive() || currentTime > entry.getValue().startTime + ANIM_DURATION_TICKS;
         });
     }
 
     /// 供渲染器调用, 获取动画信息
-    public Optional<EvasionAnimation> getAnimation(int entityId) {
-        return Optional.ofNullable(activeAnimations.get(entityId));
+    public Optional<Collection<EvasionAnimation>> getAnimation(int entityId) {
+        return Optional.of(activeAnim.get(entityId));
     }
 
     /// 存储动画状态
@@ -73,16 +82,16 @@ public class EvasionEffectManager {
         public float getProgress(float partialTicks) {
             long currentTime = Minecraft.getInstance().level.getGameTime();
             float ticksPassed = (currentTime - startTime) + partialTicks;
-            return Mth.clamp(ticksPassed / (float) ANIMATION_DURATION_TICKS, 0.0f, 1.0f);
+            return Mth.clamp(ticksPassed / (float) ANIM_DURATION_TICKS, 0.0f, 1.0f);
         }
     }
 
-    /// render text: MISS
+    /// render text: MISS<br>参<br>{@link net.minecraft.client.renderer.entity.EntityRenderer#renderNameTag(Entity, Component, PoseStack, MultiBufferSource, int)}
     public static void renderMissText(LivingEntity entity, PoseStack poseStack, MultiBufferSource buffer, int packedLight, EvasionAnimation animation, float partialTicks) {
         poseStack.pushPose();
 
         // 1. 移动到实体头顶
-        poseStack.translate(0, entity.getBbHeight() + 0.7, 0);
+        poseStack.translate(0, entity.getBbHeight() + 0.3f, 0);
 
         // 2. 使文字始终朝向玩家（Billboard effect）
         Camera camera = Minecraft.getInstance().gameRenderer.getMainCamera();
@@ -98,7 +107,7 @@ public class EvasionEffectManager {
 
         // 让文字有一个轻微的向上漂浮和淡出效果
         float progress = animation.getProgress(partialTicks);
-        float yOffset = progress * 10.0f; // 向上漂浮
+        float yOffset = progress * -10.0f; // 向上漂浮
         int alpha = (int)((1.0f - progress) * 255.0f); // 淡出
         int color = (alpha << 24) | 0xFFFFFF; // 白色, 带有透明度
 
@@ -108,7 +117,7 @@ public class EvasionEffectManager {
         poseStack.popPose();
     }
 
-    /// render evasion phantom
+    /// render evasion phantom <br>参<br> {@link LivingEntityRenderer#render(LivingEntity, float, float, PoseStack, MultiBufferSource, int)}
     public static void renderEvasionPhantom(RenderLivingEvent.Post<LivingEntity, ?> event, EvasionAnimation animation, float partialTicks) {
         LivingEntity living = event.getEntity();
         LivingEntityRenderer<LivingEntity, ?> renderer = event.getRenderer();
@@ -140,9 +149,7 @@ public class EvasionEffectManager {
         EntityModel<LivingEntity> model = renderer.getModel();
 
         // 直接渲染出的模型是倒栽葱的...
-        poseStack.translate(0, living.getBbHeight() / 2, 0);
-        poseStack.mulPose(Axis.ZP.rotationDegrees(180));
-        poseStack.mulPose(Axis.YP.rotationDegrees(-1 * living.getYRot()));
+        livingRenderOutsideRenderer(event, partialTicks);
 
         // 准备渲染半透明模型
         VertexConsumer vertexconsumer = bufferSource.getBuffer(RenderType.entityTranslucent(renderer.getTextureLocation(living)));

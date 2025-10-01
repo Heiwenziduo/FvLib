@@ -35,11 +35,13 @@ public class FvClientSetupForge {
         LivingEntity entity = event.getEntity();
         int entityId = entity.getId();
         // handle evasion logic
-        EvasionEffectManager.getInstance().getAnimation(entityId).ifPresent(animation -> {
-            float partialTicks = event.getPartialTick();
-            PoseStack poseStack = event.getPoseStack();
-            renderEvasionPhantom(event, animation, partialTicks);
-            renderMissText(entity, poseStack, event.getMultiBufferSource(), event.getPackedLight(), animation, partialTicks);
+        EvasionEffectManager.getInstance().getAnimation(entityId).ifPresent(animCollection -> {
+            animCollection.forEach(animation -> {
+                float partialTicks = event.getPartialTick();
+                PoseStack poseStack = event.getPoseStack();
+                renderEvasionPhantom(event, animation, partialTicks);
+                renderMissText(entity, poseStack, event.getMultiBufferSource(), event.getPackedLight(), animation, partialTicks);
+            });
         });
     }
 }
