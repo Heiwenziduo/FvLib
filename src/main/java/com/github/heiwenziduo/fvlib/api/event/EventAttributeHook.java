@@ -18,6 +18,7 @@ import net.minecraftforge.fml.common.Mod;
 import static com.github.heiwenziduo.fvlib.library.FvUtil.isGenericMagic;
 import static com.github.heiwenziduo.fvlib.library.FvUtil.isGenericPhysic;
 import static com.github.heiwenziduo.fvlib.library.registry.FvAttribute.*;
+import static com.github.heiwenziduo.fvlib.network.packet.ClientboundEvasionEffect.evasionDirect;
 import static com.github.heiwenziduo.fvlib.util.FvUtilInternal.setEffectDuration;
 import static java.lang.Math.random;
 
@@ -55,7 +56,7 @@ public class EventAttributeHook {
             if (result2) {
                 event.setCanceled(true);
                 FvEventHooks.onLivingEvasion(living);
-                FvPacketHandler.sendToPlayersTrackingEntity(new ClientboundEvasionEffect("evasion: " + event.getAmount()), living, true);
+                FvPacketHandler.sendToPlayersTrackingEntity(new ClientboundEvasionEffect(living.getId(), evasionDirect(living, event.getSource())), living, true);
             }
         }
     }
