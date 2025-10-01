@@ -149,6 +149,7 @@ public class EvasionEffectManager {
         EntityModel<LivingEntity> model = renderer.getModel();
 
         // 直接渲染出的模型是倒栽葱的...
+        //livingRenderOutsideRenderer(event, partialTicks, true, alpha);
         livingRenderOutsideRenderer(event, partialTicks);
 
         // 准备渲染半透明模型
