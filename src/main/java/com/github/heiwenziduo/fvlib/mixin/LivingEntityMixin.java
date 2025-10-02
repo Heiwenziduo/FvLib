@@ -1,5 +1,6 @@
 package com.github.heiwenziduo.fvlib.mixin;
 
+import com.github.heiwenziduo.fvlib.api.event.FvEventHooks;
 import com.github.heiwenziduo.fvlib.api.manager.BKBEffectManager;
 import com.github.heiwenziduo.fvlib.api.manager.TimeLockManager;
 import com.github.heiwenziduo.fvlib.api.mixin.LivingEntityMixinAPI;
@@ -142,14 +143,18 @@ public abstract class LivingEntityMixin extends Entity implements LivingEntityMi
     @Inject(method = "actuallyHurt", at = @At("HEAD"), cancellable = true)
     public void onTakePureDamage(DamageSource pDamageSource, float pDamageAmount, CallbackInfo ci) {
         if (pDamageSource != null && pDamageSource.is(PURE) && !isInvulnerableTo(pDamageSource)) {
-            // 欺骗全世界的类型转换 [(LivingEntity) (Object)](https://www.reddit.com/r/fabricmc/comments/nw3rs8/how_can_i_access_the_this_in_a_mixin_for_a_class/?tl=zh-hans)
+            Entity entity = pDamageSource.getEntity();
+            if (entity instanceof LivingEntity living) {
+                // 抛出造成纯粹伤害事件
+                pDamageAmount = FvEventHooks.onLivingDealPure(living, pDamageSource, pDamageAmount);
+            }
+            // 类型转换 [(LivingEntity) (Object)](https://www.reddit.com/r/fabricmc/comments/nw3rs8/how_can_i_access_the_this_in_a_mixin_for_a_class/?tl=zh-hans)
             pDamageAmount = Math.max(net.minecraftforge.common.ForgeHooks.onLivingHurt((LivingEntity) (Object) this, pDamageSource, pDamageAmount), pDamageAmount);
 
             float f1 = Math.max(pDamageAmount - getAbsorptionAmount(), 0.0F);
             setAbsorptionAmount(getAbsorptionAmount() - (pDamageAmount - f1));
             float f = pDamageAmount - f1;
             if (f > 0.0F && f < 3.4028235E37F) {
-                Entity entity = pDamageSource.getEntity();
                 if (entity instanceof ServerPlayer) {
                     ServerPlayer serverplayer = (ServerPlayer)entity;
                     serverplayer.awardStat(Stats.DAMAGE_DEALT_ABSORBED, Math.round(f * 10.0F));
@@ -157,8 +162,8 @@ public abstract class LivingEntityMixin extends Entity implements LivingEntityMi
             }
 
             f1 = Math.max(net.minecraftforge.common.ForgeHooks.onLivingDamage((LivingEntity) (Object) this, pDamageSource, f1), f1);
-            // todo: pure damage event
-
+            // 实体受到纯粹伤害
+            FvEventHooks.onLivingTakePure((LivingEntity) (Object) this, pDamageSource, f1);
             if (f1 != 0.0F) {
                 getCombatTracker().recordDamage(pDamageSource, f1);
                 setHealth(getHealth() - f1);

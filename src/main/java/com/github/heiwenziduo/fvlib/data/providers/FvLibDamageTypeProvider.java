@@ -19,7 +19,7 @@ public class FvLibDamageTypeProvider implements RegistrySetBuilder.RegistryBoots
     @Override
     public void run(BootstapContext<DamageType> context) {
         String id = ModId + ".";
-        context.register(PURE, new DamageType(id + PURE.location().getPath(), DamageScaling.NEVER, 0.1f));
+        context.register(PURE, new DamageType(id + PURE.location().getPath(), DamageScaling.WHEN_CAUSED_BY_LIVING_NON_PLAYER, 0.1f));
 
     }
 }

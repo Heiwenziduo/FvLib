@@ -158,19 +158,6 @@ public class EvasionEffectManager {
         VertexConsumer vertexconsumer = bufferSource.getBuffer(RenderType.entityTranslucent(renderer.getTextureLocation(living)));
         model.renderToBuffer(poseStack, vertexconsumer, packedLight, LivingEntityRenderer.getOverlayCoords(living, 0.0f), 1.0f, 1.0f, 1.0f, alpha);
 
-        //todo: 渲染生物layer(如玩家盔甲)
-//        List<RenderLayer<LivingEntity, EntityModel<LivingEntity>>> layers =
-//                (List) ((LivingEntityRendererAccessor) renderer).getLayers();
-//        for (RenderLayer<LivingEntity, EntityModel<LivingEntity>> layer : layers) {
-//            layer.render(poseStack, translucentBuffer, packedLight, entity,
-//                    animation.capturedLimbSwing,
-//                    animation.capturedLimbSwingAmount,
-//                    partialTicks, // 注意这里用实时的partialTicks
-//                    animation.capturedAgeInTicks,
-//                    animation.capturedNetHeadYaw,
-//                    animation.capturedHeadPitch);
-//        }
-
         poseStack.popPose();
     }
 }
