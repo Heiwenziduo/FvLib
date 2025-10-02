@@ -41,11 +41,12 @@ public class EvasionEffectManager {
     }
 
     /// 单次动画时长(tick)
-    private static final int ANIM_DURATION_TICKS = 6;
+    private static final int ANIM_DURATION_TICKS_TOTAL = 12; // 文字持续时间长一点
+    private static final int ANIM_DURATION_TICKS_PHANTOM = 6;
     /// 动画实例数
     private static final int ANIM_INSTANCE_NUMBER = 4;
     /// 残影滑行距离
-    private static final float SLIDE_DISTANCE = 0.2f;
+    private static final float SLIDE_DISTANCE = 0.3f;
 
     /// <span color="f44">NOTE</span>: ArrayListMultimap is not threadsafe when any concurrent operations update the multimap.
     private final Multimap<Integer, EvasionAnimation> activeAnim = ArrayListMultimap.create();
@@ -69,7 +70,7 @@ public class EvasionEffectManager {
         activeAnim.entries().removeIf(entry -> {
             Entity entity = level.getEntity(entry.getKey());
             // 如果实体不存在或动画已结束, 则移除
-            return entity == null || !entity.isAlive() || currentTime > entry.getValue().startTime + ANIM_DURATION_TICKS;
+            return entity == null || !entity.isAlive() || currentTime > entry.getValue().startTime + ANIM_DURATION_TICKS_TOTAL;
         });
     }
 
@@ -81,10 +82,16 @@ public class EvasionEffectManager {
     /// 存储动画状态
     public record EvasionAnimation(long startTime, Vec3 slideDirect) {
         /// 获取动画进度 (0.0, 1.0)
-        public float getProgress(float partialTicks) {
+        public float getProgressText(float partialTicks) {
             long currentTime = Minecraft.getInstance().level.getGameTime();
             float ticksPassed = (currentTime - startTime) + partialTicks;
-            return Mth.clamp(ticksPassed / (float) ANIM_DURATION_TICKS, 0.0f, 1.0f);
+            return Mth.clamp(ticksPassed / (float) ANIM_DURATION_TICKS_TOTAL, 0.0f, 1.0f);
+        }
+
+        public float getProgressPhantom(float partialTicks) {
+            long currentTime = Minecraft.getInstance().level.getGameTime();
+            float ticksPassed = (currentTime - startTime) + partialTicks;
+            return Mth.clamp(ticksPassed / (float) ANIM_DURATION_TICKS_PHANTOM, 0.0f, 1.0f);
         }
     }
 
@@ -108,7 +115,7 @@ public class EvasionEffectManager {
         float textWidth = -font.width(text) / 2.0f;
 
         // 让文字有一个轻微的向上漂浮和淡出效果
-        float progress = animation.getProgress(partialTicks);
+        float progress = animation.getProgressText(partialTicks);
         float yOffset = progress * -10.0f; // 向上漂浮
         int alpha = (int)((1.0f - progress) * 255.0f); // 淡出
         int color = (alpha << 24) | 0xFFFFFF; // 白色, 带有透明度
@@ -129,8 +136,8 @@ public class EvasionEffectManager {
 
         poseStack.pushPose();
         Vec3 direction = animation.slideDirect();
-        float progress = animation.getProgress(partialTicks);
-        float currentOffset = progress > 0.5 ?
+        float progress = animation.getProgressPhantom(partialTicks);
+        float currentOffset = progress < 0.5 ?
                 Mth.lerp(progress * 2, 0, SLIDE_DISTANCE) : Mth.lerp((1 - progress) * 2, 0, SLIDE_DISTANCE);
 
         // 应用位移

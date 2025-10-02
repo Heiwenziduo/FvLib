@@ -2,6 +2,7 @@ package com.github.heiwenziduo.fvlib.test;
 
 import com.github.heiwenziduo.fvlib.library.effect.BKBEffect;
 import com.github.heiwenziduo.fvlib.library.event.living.EvasionCheckEvent;
+import com.github.heiwenziduo.fvlib.library.event.living.PureDamageTakenEvent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
@@ -22,7 +23,7 @@ public class TestEffect extends BKBEffect {
 
     /// static listener to registry a "DamageTakenHook"
     @SubscribeEvent(priority = EventPriority.LOW)
-    public static void onDamageTaken(LivingAttackEvent event) {
+    public static void testEvent(LivingAttackEvent event) {
         // always server
         Entity attacker = event.getSource().getEntity();
         if (attacker instanceof LivingEntity){
@@ -35,7 +36,7 @@ public class TestEffect extends BKBEffect {
     }
 
     @SubscribeEvent
-    public static void onEvasion(EvasionCheckEvent event) {
+    public static void testEvent(EvasionCheckEvent event) {
         //client: false
 //        System.out.println("onEvasion: " + event);
 //        System.out.println("client?: " + event.getEntity().level().isClientSide);
@@ -43,6 +44,11 @@ public class TestEffect extends BKBEffect {
 //            event.setCanceled(true);
 //            System.out.println("============================= no evasion");
 //        }
+    }
+
+    @SubscribeEvent
+    public static void testEvent(PureDamageTakenEvent event) {
+        //System.out.println("PureDamageTakenEvent: " + event);
     }
 
 }
