@@ -1,5 +1,6 @@
 package com.github.heiwenziduo.fvlib.library;
 
+import com.github.heiwenziduo.fvlib.api.event.FvEventHooks;
 import com.github.heiwenziduo.fvlib.api.mixin.LivingEntityMixinAPI;
 import com.github.heiwenziduo.fvlib.library.api.DispelType;
 import com.github.heiwenziduo.fvlib.library.effect.FvHookedEffect;
@@ -28,6 +29,7 @@ public class FvUtil {
     /// set ticks to time-lock a living
     public static void setTimeLock(LivingEntity living, int tick) {
         ((LivingEntityMixinAPI) living).FvLib$getTimeLockManager().setTimeLock(tick);
+        FvEventHooks.onLivingTimelock(living, tick);
     }
 
     /// check if a living has any BKB effects

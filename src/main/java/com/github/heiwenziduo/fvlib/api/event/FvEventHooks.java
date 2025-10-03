@@ -29,4 +29,8 @@ public class FvEventHooks {
     public static void onLivingTakePure(LivingEntity entity, DamageSource pSource, float amount) {
         MinecraftForge.EVENT_BUS.post(new PureDamageTakenEvent(entity, pSource, amount));
     }
+
+    public static void onLivingTimelock(LivingEntity entity, int time) {
+        MinecraftForge.EVENT_BUS.post(new TimelockEvent(entity, time));
+    }
 }

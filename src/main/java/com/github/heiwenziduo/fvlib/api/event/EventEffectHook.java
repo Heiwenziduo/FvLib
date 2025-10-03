@@ -5,6 +5,7 @@ import com.github.heiwenziduo.fvlib.library.effect.hook.EffectAddedHook;
 import com.github.heiwenziduo.fvlib.library.effect.hook.EffectApplicableHook;
 import com.github.heiwenziduo.fvlib.library.effect.hook.EffectDispelledHook;
 import com.github.heiwenziduo.fvlib.library.effect.hook.EffectExpiredHook;
+import com.github.heiwenziduo.fvlib.library.event.living.TimelockEvent;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
@@ -15,6 +16,13 @@ import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(modid = FvLib.ModId, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class EventEffectHook {
+
+    @SubscribeEvent
+    static void onLivingTimelocked(TimelockEvent event) {
+        LivingEntity living = event.getEntity();
+//        System.out.println("onLivingTimelocked: " + living);
+//        System.out.println("client?: " + living.level().isClientSide); //false
+    }
 
 //    @SubscribeEvent(priority = EventPriority.LOW)
 //    static void livingAttack(LivingAttackEvent event) {
