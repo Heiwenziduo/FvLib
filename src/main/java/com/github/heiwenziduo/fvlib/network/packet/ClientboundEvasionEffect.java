@@ -1,7 +1,6 @@
 package com.github.heiwenziduo.fvlib.network.packet;
 
 import com.github.heiwenziduo.fvlib.client.manager.EvasionEffectManager;
-import com.github.heiwenziduo.fvlib.network.BoundedNetworkPacket;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;

@@ -1,4 +1,4 @@
-package com.github.heiwenziduo.fvlib.network;
+package com.github.heiwenziduo.fvlib.network.packet;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;

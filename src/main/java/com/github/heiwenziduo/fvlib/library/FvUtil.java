@@ -4,6 +4,8 @@ import com.github.heiwenziduo.fvlib.api.event.FvEventHooks;
 import com.github.heiwenziduo.fvlib.api.mixin.LivingEntityMixinAPI;
 import com.github.heiwenziduo.fvlib.library.api.DispelType;
 import com.github.heiwenziduo.fvlib.library.effect.FvHookedEffect;
+import com.github.heiwenziduo.fvlib.network.FvPacketHandler;
+import com.github.heiwenziduo.fvlib.network.packet.ClientboundTimelockEffect;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffect;
@@ -26,10 +28,16 @@ public class FvUtil {
         return ((LivingEntityMixinAPI) living).FvLib$getTimeLockManager().getTimeLock();
     }
 
-    /// set ticks to time-lock a living
+    /// main entry to set living timelock <br>
+    /// note that timelock tick is "short" inside, so any number higher than 32767 will be set to short.MAXVALUE <br><br>
+    /// PS. this effect is transitory and should not be written into save file
     public static void setTimeLock(LivingEntity living, int tick) {
+        if (living.level().isClientSide) return;
+
+        tick = Math.min(tick, Short.MAX_VALUE);
         ((LivingEntityMixinAPI) living).FvLib$getTimeLockManager().setTimeLock(tick);
         FvEventHooks.onLivingTimelock(living, tick);
+        FvPacketHandler.sendToPlayersTrackingEntity(new ClientboundTimelockEffect(living.getId(), (short) tick), living, true);
     }
 
     /// check if a living has any BKB effects

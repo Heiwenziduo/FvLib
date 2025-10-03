@@ -2,6 +2,7 @@ package com.github.heiwenziduo.fvlib.client;
 
 import com.github.heiwenziduo.fvlib.FvLib;
 import com.github.heiwenziduo.fvlib.client.manager.EvasionEffectManager;
+import com.github.heiwenziduo.fvlib.client.manager.TimelockEffectManager;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
@@ -24,9 +25,16 @@ public class FvRenderEvents {
         if (event.phase == TickEvent.Phase.END) {
             ClientLevel level = Minecraft.getInstance().level;
             if (level != null) {
+                TimelockEffectManager.getInstance().tick(level);
                 EvasionEffectManager.getInstance().tick(level);
             }
         }
+    }
+
+    @SubscribeEvent
+    public static void onRenderLivingPre(RenderLivingEvent.Pre<LivingEntity, EntityModel<LivingEntity>> event) {
+        LivingEntity entity = event.getEntity();
+        int entityId = entity.getId();
     }
 
     @SubscribeEvent

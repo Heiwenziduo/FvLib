@@ -30,7 +30,7 @@ import static com.github.heiwenziduo.fvlib.client.manager.FvRenderUtil.livingRen
 /// OnlyIn: <span color="f44">CLIENT</span><br>
 /// 客户端单例管理动画状态
 @OnlyIn(Dist.CLIENT)
-public class EvasionEffectManager {
+public class EvasionEffectManager implements ClientEffectsManager {
     public static final EvasionEffectManager INSTANCE = new EvasionEffectManager();
     public static EvasionEffectManager getInstance() {
         return INSTANCE;
