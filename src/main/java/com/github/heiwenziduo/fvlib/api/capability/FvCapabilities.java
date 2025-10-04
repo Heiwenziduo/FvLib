@@ -108,7 +108,6 @@ public class FvCapabilities {
                 if (capa.isTimelocked()) {
                     ((LivingEntityMixinAPI) mob).FvLib$doHurtTick();
 
-                    // todo: 给时停实体一个紫色滤镜(render)
                     mob.tickCount--;
 
                     event.setCanceled(true);
