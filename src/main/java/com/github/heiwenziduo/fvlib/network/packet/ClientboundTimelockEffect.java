@@ -30,7 +30,6 @@ public class ClientboundTimelockEffect implements BoundedNetworkPacket {
     public boolean handle(Supplier<NetworkEvent.Context> supplier) {
         NetworkEvent.Context ctx = supplier.get();
         ctx.enqueueWork(() -> {
-            System.out.println("client handle timelock:" + lockTick);
             TimelockEffectManager.getInstance().startEffect(id, lockTick);
         });
         return true;

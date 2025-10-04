@@ -10,12 +10,13 @@ import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.simple.SimpleChannel;
 
+import static com.github.heiwenziduo.fvlib.FvLib.fvResource;
 import static net.minecraftforge.network.NetworkDirection.PLAY_TO_CLIENT;
 
 public class FvPacketHandler {
 
     private static final SimpleChannel CHANNEL = NetworkRegistry.ChannelBuilder
-            .named(ResourceLocation.fromNamespaceAndPath(FvLib.ModId, "network"))
+            .named(fvResource("network"))
             .networkProtocolVersion(() -> "1.0")
             .clientAcceptedVersions(s -> true)
             .serverAcceptedVersions(s -> true)

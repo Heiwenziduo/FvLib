@@ -11,6 +11,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
 
+import static com.github.heiwenziduo.fvlib.test.TestCapacityProvider.TEST_CAPA;
+
 public class TestStick extends Item {
     public TestStick(Properties pProperties) {
         super(pProperties);
@@ -20,6 +22,15 @@ public class TestStick extends Item {
     public boolean hurtEnemy(ItemStack pStack, LivingEntity pTarget, LivingEntity pAttacker) {
         FvUtil.setTimeLock(pTarget, 100);
         System.out.println("set someone in time-lock");
+        System.out.println("testCapa:=============================");
+        pTarget.getCapability(TEST_CAPA).ifPresent(capa -> {
+            System.out.println("target: " + capa.getTestValue());
+            capa.setTestValue(capa.getTestValue() + 1);
+        });
+        pAttacker.getCapability(TEST_CAPA).ifPresent(capa -> {
+            System.out.println("attacker: " + capa.getTestValue());
+            capa.setTestValue(capa.getTestValue() + 1);
+        });
         return false;
     }
 

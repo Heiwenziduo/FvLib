@@ -197,9 +197,9 @@ public abstract class LivingEntityMixin extends Entity implements LivingEntityMi
 
 
 
-    ///
+    /// 每t受伤逻辑
     @Unique
-    private void FvLib$doHurtTick() {
+    public void FvLib$doHurtTick() {
         if (hurtTime > 0) {
             --hurtTime;
         }

@@ -16,7 +16,7 @@ import net.minecraftforge.fml.common.Mod;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
-@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
+@Mod.EventBusSubscriber(modid = FvLib.ModId, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class DataGen {
     @SubscribeEvent
     static void gatherData(final GatherDataEvent event) {

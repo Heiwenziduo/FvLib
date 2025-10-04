@@ -30,7 +30,7 @@ public class FvUtil {
 
     /// main entry to set living timelock <br>
     /// note that timelock tick is "short" inside, so any number higher than 32767 will be set to short.MAXVALUE <br><br>
-    /// PS. this effect is transitory and should not be written into save file
+    // PS. this effect is transitory and should not be written into save file (?)
     public static void setTimeLock(LivingEntity living, int tick) {
         if (living.level().isClientSide) return;
 

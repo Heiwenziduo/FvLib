@@ -6,4 +6,5 @@ import com.github.heiwenziduo.fvlib.api.manager.TimeLockManager;
 public interface LivingEntityMixinAPI {
     TimeLockManager FvLib$getTimeLockManager();
     BKBEffectManager FvLib$getBKBEffectManager();
+    void FvLib$doHurtTick();
 }
