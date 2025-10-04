@@ -1,15 +1,9 @@
 package com.github.heiwenziduo.fvlib.mixin;
 
 import com.github.heiwenziduo.fvlib.api.event.FvEventHooks;
-import com.github.heiwenziduo.fvlib.api.manager.TimeLockManager;
 import com.github.heiwenziduo.fvlib.api.mixin.LivingEntityMixinAPI;
 import com.github.heiwenziduo.fvlib.library.effect.FvHookedEffect;
 import net.minecraft.core.Direction;
-import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializers;
-import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.damagesource.CombatTracker;
@@ -78,23 +72,8 @@ public abstract class LivingEntityMixin extends Entity implements LivingEntityMi
     public abstract float getHealth();
     @Shadow
     public abstract void setHealth(float pAbsorptionAmount);
-    @Shadow public abstract boolean hasEffect(MobEffect pEffect);
     @Shadow public abstract void heal(float pHealAmount);
-    @Shadow @javax.annotation.Nullable public abstract MobEffectInstance getEffect(MobEffect pEffect);
     @Shadow public abstract <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing);
-
-    @Unique
-    private static final EntityDataAccessor<Integer> DATA_TIME_LOCK = SynchedEntityData.defineId(LivingEntity.class, EntityDataSerializers.INT);
-
-    @Unique
-    protected TimeLockManager FvLib$timeLockManager = new TimeLockManager();
-
-
-    @Unique
-    @Override
-    public TimeLockManager FvLib$getTimeLockManager() {
-        return FvLib$timeLockManager;
-    }
 
 
     @Inject(method = "createLivingAttributes", at = @At("RETURN"), cancellable = true)
@@ -102,30 +81,17 @@ public abstract class LivingEntityMixin extends Entity implements LivingEntityMi
         cir.setReturnValue(cir.getReturnValue().add(MAGIC_RESISTANCE).add(STATUS_RESISTANCE).add(PASSIVE_REGEN).add(EVASION).add(LIFESTEAL));
     }
 
-    @Inject(method = "defineSynchedData", at = @At("HEAD"))
-    public void defineSynchedData(CallbackInfo ci) {
-        entityData.define(DATA_TIME_LOCK, 0);
-    }
 
-    /// 被时间锁定的活物不能行动
-    @Inject(method = "tick", at = @At("HEAD"), cancellable = true)
+    /// 被时间锁定的活物不能行动<br><br>
+    /// 10/04 时停逻辑在{@link com.github.heiwenziduo.fvlib.api.capability.FvCapabilities#onLivingTick}处理
+    @Inject(method = "tick", at = @At("HEAD"))
     public void livingTickMixin(CallbackInfo ci) {
-        if (!level().isClientSide) {
-            // 服务端发起同步
-            entityData.set(DATA_TIME_LOCK, FvLib$timeLockManager.getTimeLock());
-        } else {
-            // 客户端接收同步的数据
-            int timeLockSync = entityData.get(DATA_TIME_LOCK);
-            FvLib$timeLockManager.setTimeLock(timeLockSync);
-        }
-
 
         // 似乎也会插入所有子类的开头 ?
-        FvLib$handleTimeLock(ci);
         FvLib$handleLifeRegen();
-        FvLib$handleStun(ci);
         FvLib$handleHex();
 
+        // bug: 1. 客户端tick停止后实体肢体可能会抽搐, 2.渲染动画没有停下, 例如岩浆怪, 在空中不会保持"展开"的状态, // 10/04 答案是上一刻(0)到当前的插值与partialTick
     }
 
     /// 纯粹伤害不会被减免
@@ -222,30 +188,6 @@ public abstract class LivingEntityMixin extends Entity implements LivingEntityMi
         }
     }
 
-    ///
-    @Unique
-    private void FvLib$handleTimeLock(CallbackInfo ci) {
-        if (FvLib$getTimeLockManager().isTimeLocked()) {
-            FvLib$timeLockManager.timeLockDecrement();
-            // if is locked, apply some base tick logic, like reducing invulnerable time.
-            // from LivingEntity#baseTick
-            FvLib$doHurtTick();
-
-            if(!level().isClientSide) {
-                if (tickCount % 10 == 0) {
-                    for (int i = 0; i < 5; i++) {
-                        ((ServerLevel) level()).sendParticles(ParticleTypes.DRAGON_BREATH, getX() + random.nextDouble(), getY() + random.nextDouble(), getZ() + random.nextDouble(), 1, 0, .5, 0, .5);
-                    }
-                }
-
-                ci.cancel();
-
-            } else {
-                // todo: 给时停实体一个紫色滤镜(render)
-                // bug: 1. 客户端tick停止后实体肢体可能会抽搐, 2.渲染动画没有停下, 例如岩浆怪, 在空中不会保持"展开"的状态
-            }
-        }
-    }
 
     /// {@link LivingEntity#heal(float)}
     @Unique
@@ -257,12 +199,6 @@ public abstract class LivingEntityMixin extends Entity implements LivingEntityMi
         }
     }
 
-    ///
-    @Unique
-    private void FvLib$handleStun(CallbackInfo ci) {
-        // 能运行到这里说明不在时停中
-
-    }
 
     /// todo
     @Unique

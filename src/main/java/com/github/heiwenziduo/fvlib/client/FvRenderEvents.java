@@ -2,7 +2,6 @@ package com.github.heiwenziduo.fvlib.client;
 
 import com.github.heiwenziduo.fvlib.FvLib;
 import com.github.heiwenziduo.fvlib.client.manager.EvasionEffectManager;
-import com.github.heiwenziduo.fvlib.client.manager.TimelockEffectManager;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
@@ -25,7 +24,6 @@ public class FvRenderEvents {
         if (event.phase == TickEvent.Phase.END) {
             ClientLevel level = Minecraft.getInstance().level;
             if (level != null) {
-                TimelockEffectManager.getInstance().tick(level);
                 EvasionEffectManager.getInstance().tick(level);
             }
         }
@@ -36,17 +34,6 @@ public class FvRenderEvents {
         LivingEntity entity = event.getEntity();
         int entityId = entity.getId();
 
-//        if (getTimeLock(entity) > 0) {
-            // 实体时停中
-
-            // 捕获快照 (仅在冻结的第一帧执行)
-//            if (!data.hasSnapshot()) {
-//                data.captureSnapshot(entity);
-//            }
-
-            // 恢复快照 (在冻结的每一帧都执行)
-//            data.applySnapshot(entity);
-//        }
     }
 
     @SubscribeEvent

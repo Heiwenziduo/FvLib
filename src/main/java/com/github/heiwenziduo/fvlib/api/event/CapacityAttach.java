@@ -24,9 +24,7 @@ public class CapacityAttach {
     static void onAttachCapacity(AttachCapabilitiesEvent<Entity> event) {
         if (event.getObject() instanceof LivingEntity living) {
             // 在两端触发
-            System.out.println("onAttachCapacity/////////////////////////////////" + living.getClass());
-            System.out.println("client?  " + living.level().isClientSide);
-            System.out.println("isRegistered?    " + FV_CAPA.isRegistered());
+            // System.out.println("client?  " + living.level().isClientSide);
 
             if (!living.getCapability(FV_CAPA).isPresent()) {
                 event.addCapability(FV_CAPA_RESOURCE, new FvCapabilitiesProvider(living));

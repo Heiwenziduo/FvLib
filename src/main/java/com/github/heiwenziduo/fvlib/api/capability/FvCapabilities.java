@@ -21,7 +21,7 @@ import static com.github.heiwenziduo.fvlib.api.capability.FvCapabilitiesProvider
 public class FvCapabilities {
     final LivingEntity living;
     final boolean clientSide;
-    short timelock = 0;
+    short timelock = 0; // at most 32767t, 1638sec
     byte bkbNumber = 0;
     byte stunNumber = 0;
 
@@ -32,6 +32,10 @@ public class FvCapabilities {
 
     public boolean isTimelocked() {
         return timelock > 0;
+    }
+
+    public short getTimelock() {
+        return timelock;
     }
 
     public void setTimelock(short timelock) {
@@ -61,7 +65,7 @@ public class FvCapabilities {
         return stunNumber > 0;
     }
     public byte getStunEffect() {
-        //fixme: 多个同种stun效果会叠加
+        //fixme: 多个同种stun加数累计
         return ++stunNumber;
     }
     public byte loseStunEffect() {
@@ -104,6 +108,7 @@ public class FvCapabilities {
                 if (capa.isTimelocked()) {
                     ((LivingEntityMixinAPI) mob).FvLib$doHurtTick();
 
+                    // todo: 给时停实体一个紫色滤镜(render)
                     mob.tickCount--;
 
                     event.setCanceled(true);
@@ -127,7 +132,7 @@ public class FvCapabilities {
         });
     }
 
-    /// ========================================================================================== SYNC
+    // ========================================================================================== SYNC
     public void sendPacket() {
         if (clientSide) return;
         FvPacketHandler.sendToPlayersTrackingEntity(new ClientboundCapabilityPacket(living.getId(), this.timelock, bkbNumber, stunNumber), living, true);

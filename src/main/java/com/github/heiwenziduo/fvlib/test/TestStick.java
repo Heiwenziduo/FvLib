@@ -33,7 +33,7 @@ public class TestStick extends Item {
 
         System.out.println("testCapa:=============================");
         pTarget.getCapability(FV_CAPA).ifPresent(capa -> {
-            capa.setTimelock((short) 40);
+            capa.setTimelock((short) 100);
             System.out.println("bkb  " + capa.getBkbNumber());
             System.out.println("stun " + capa.getStunNumber());
         });

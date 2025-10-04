@@ -1,6 +1,5 @@
 package com.github.heiwenziduo.fvlib.network.packet;
 
-import com.github.heiwenziduo.fvlib.client.manager.TimelockEffectManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
@@ -9,6 +8,7 @@ import java.util.function.Supplier;
 
 import static com.github.heiwenziduo.fvlib.api.capability.FvCapabilitiesProvider.FV_CAPA;
 
+/// 用于同步客户端fv_capa
 public class ClientboundCapabilityPacket implements BoundedNetworkPacket {
     private final int id;
     private final short timelock;

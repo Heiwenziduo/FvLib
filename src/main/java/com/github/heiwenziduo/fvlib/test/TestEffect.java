@@ -63,7 +63,7 @@ public class TestEffect extends FvHookedEffect implements EffectAddedHook {
         // client: false
         System.out.println("test onEffectAdded client:    " + event.getEntity().level().isClientSide);
         event.getEntity().getCapability(FV_CAPA).ifPresent(capa -> {
-            capa.setTimelock((short) 100);
+            //capa.setTimelock((short) 100);
         });
     }
 }
