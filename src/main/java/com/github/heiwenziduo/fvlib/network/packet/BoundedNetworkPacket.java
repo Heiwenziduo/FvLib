@@ -7,8 +7,8 @@ import java.util.function.Supplier;
 
 public interface BoundedNetworkPacket {
     /// encoder
-    void toBytes(FriendlyByteBuf buf);
+    public void toBytes(FriendlyByteBuf buf);
 
     /// consumerMainThread
-    boolean handle(Supplier<NetworkEvent.Context> supplier);
+    public boolean handle(Supplier<NetworkEvent.Context> supplier);
 }

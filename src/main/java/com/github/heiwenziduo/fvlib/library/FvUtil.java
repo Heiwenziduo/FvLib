@@ -36,15 +36,18 @@ public class FvUtil {
     public static void setTimeLock(LivingEntity living, int tick) {
         if (living.level().isClientSide) return;
 
-        tick = Math.min(tick, Short.MAX_VALUE);
-        ((LivingEntityMixinAPI) living).FvLib$getTimeLockManager().setTimeLock(tick);
-        FvEventHooks.onLivingTimelock(living, tick);
-        FvPacketHandler.sendToPlayersTrackingEntity(new ClientboundTimelockEffect(living.getId(), (short) tick), living, true);
+        short tickS = (short) Math.min(tick, Short.MAX_VALUE);
+        // todo: deprecated api
+        //((LivingEntityMixinAPI) living).FvLib$getTimeLockManager().setTimeLock(tick);
+        //FvPacketHandler.sendToPlayersTrackingEntity(new ClientboundTimelockEffect(living.getId(), (short) tick), living, true);
+        FvEventHooks.onLivingTimelock(living, tickS);
+        living.getCapability(FV_CAPA).ifPresent(capa -> {
+            capa.setTimelock(tickS);
+        });
     }
 
     /// check if a living has any BKB effects
     public static boolean hasBKB(LivingEntity living) {
-        //return ((LivingEntityMixinAPI) living).FvLib$getBKBEffectManager().hasBKB();
         AtomicBoolean haveBKB = new AtomicBoolean(false);
         living.getCapability(FV_CAPA).ifPresent(capa -> {
             haveBKB.set(capa.haveBKB());

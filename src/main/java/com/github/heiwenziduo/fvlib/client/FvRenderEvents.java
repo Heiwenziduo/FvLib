@@ -16,7 +16,6 @@ import net.minecraftforge.fml.common.Mod;
 
 import static com.github.heiwenziduo.fvlib.client.manager.EvasionEffectManager.renderEvasionPhantom;
 import static com.github.heiwenziduo.fvlib.client.manager.EvasionEffectManager.renderMissText;
-import static com.github.heiwenziduo.fvlib.library.FvUtil.getTimeLock;
 
 @Mod.EventBusSubscriber(modid = FvLib.ModId, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
 public class FvRenderEvents {
@@ -37,7 +36,7 @@ public class FvRenderEvents {
         LivingEntity entity = event.getEntity();
         int entityId = entity.getId();
 
-        if (getTimeLock(entity) > 0) {
+//        if (getTimeLock(entity) > 0) {
             // 实体时停中
 
             // 捕获快照 (仅在冻结的第一帧执行)
@@ -47,7 +46,7 @@ public class FvRenderEvents {
 
             // 恢复快照 (在冻结的每一帧都执行)
 //            data.applySnapshot(entity);
-        }
+//        }
     }
 
     @SubscribeEvent

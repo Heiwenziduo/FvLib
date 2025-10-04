@@ -2,6 +2,7 @@ package com.github.heiwenziduo.fvlib.initializer;
 
 import com.github.heiwenziduo.fvlib.FvLib;
 import com.github.heiwenziduo.fvlib.library.effect.BKBEffect;
+import com.github.heiwenziduo.fvlib.library.effect.FvHookedEffect;
 import com.github.heiwenziduo.fvlib.library.effect.StunEffect;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -15,8 +16,8 @@ public class FvEffects {
         EFFECTS.register(eventBus);
     }
 
-    public static final RegistryObject<StunEffect> CLASSIC_STUN = EFFECTS.register("stun_classic", () -> new StunEffect(true));
-    public static final RegistryObject<BKBEffect> CLASSIC_BKB = EFFECTS.register("bkb_classic", () -> new BKBEffect(0xf4c22c));
+    public static final RegistryObject<FvHookedEffect> CLASSIC_STUN = EFFECTS.register("stun_classic", () -> new StunEffect(true));
+    public static final RegistryObject<FvHookedEffect> CLASSIC_BKB = EFFECTS.register("bkb_classic", () -> new BKBEffect(0xf4c22c));
 
     // example of reuse Stun effect
     // public static final RegistryObject<StunEffect> BASHER_STUN = EFFECTS.register("stun_basher", () -> new StunEffect(true));

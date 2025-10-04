@@ -1,9 +1,8 @@
 package com.github.heiwenziduo.fvlib.network;
 
-import com.github.heiwenziduo.fvlib.FvLib;
+import com.github.heiwenziduo.fvlib.network.packet.ClientboundCapabilityPacket;
 import com.github.heiwenziduo.fvlib.network.packet.ClientboundEvasionEffect;
 import com.github.heiwenziduo.fvlib.network.packet.ClientboundTimelockEffect;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraftforge.network.NetworkRegistry;
@@ -39,6 +38,12 @@ public class FvPacketHandler {
                 .decoder(ClientboundTimelockEffect::new)
                 .encoder(ClientboundTimelockEffect::toBytes)
                 .consumerMainThread(ClientboundTimelockEffect::handle)
+                .add();
+
+        CHANNEL.messageBuilder(ClientboundCapabilityPacket.class, id(), PLAY_TO_CLIENT)
+                .decoder(ClientboundCapabilityPacket::new)
+                .encoder(ClientboundCapabilityPacket::toBytes)
+                .consumerMainThread(ClientboundCapabilityPacket::handle)
                 .add();
     }
 

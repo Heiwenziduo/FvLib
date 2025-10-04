@@ -196,9 +196,9 @@ public abstract class LivingEntityMixin extends Entity implements LivingEntityMi
             --hurtTime;
         }
         // ServerPlayer 的 invulnerable-- 在 tick() 中, 暂时不管它
-//                if (invulnerableTime > 0 && !(this instanceof ServerPlayer)) {
-//                    --invulnerableTime;
-//                }
+//        if (invulnerableTime > 0 && !(((LivingEntity) (Object) this) instanceof ServerPlayer)) {
+//            --invulnerableTime;
+//        }
         if (invulnerableTime > 0) {
             --invulnerableTime;
         }

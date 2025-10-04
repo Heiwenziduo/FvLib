@@ -1,7 +1,7 @@
 package com.github.heiwenziduo.fvlib.test;
 
 import com.github.heiwenziduo.fvlib.FvLib;
-import com.github.heiwenziduo.fvlib.library.effect.BKBEffect;
+import com.github.heiwenziduo.fvlib.library.effect.FvHookedEffect;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -19,5 +19,5 @@ public class TestThings {
 
     public static final RegistryObject<Item> TEST_STICK = ITEMS_T.register("test_stick",
             () -> new TestStick(new Item.Properties()));
-    public static final RegistryObject<BKBEffect> TEST_EFFECT = EFFECTS_T.register("test_effect", TestEffect::new);
+    public static final RegistryObject<FvHookedEffect> TEST_EFFECT = EFFECTS_T.register("test_effect", TestEffect::new);
 }

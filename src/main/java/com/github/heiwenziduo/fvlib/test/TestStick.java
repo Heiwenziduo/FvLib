@@ -1,8 +1,10 @@
 package com.github.heiwenziduo.fvlib.test;
 
 import com.github.heiwenziduo.fvlib.library.FvUtil;
+import com.github.heiwenziduo.fvlib.library.effect.StunEffect;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -12,6 +14,7 @@ import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
 
 import static com.github.heiwenziduo.fvlib.api.capability.FvCapabilitiesProvider.FV_CAPA;
+import static com.github.heiwenziduo.fvlib.initializer.FvEffects.CLASSIC_STUN;
 import static com.github.heiwenziduo.fvlib.test.TestCapacityProvider.TEST_CAPA;
 
 public class TestStick extends Item {
@@ -25,16 +28,12 @@ public class TestStick extends Item {
         //FvUtil.setTimeLock(pTarget, 100);
 //        System.out.println("set someone in time-lock");
 
+        //pTarget.addEffect(new MobEffectInstance(new StunEffect())); // can not use effect does not register
+        //pTarget.addEffect(new MobEffectInstance(CLASSIC_STUN.get(), 20, 0));
+
         System.out.println("testCapa:=============================");
-//        pTarget.getCapability(TEST_CAPA).ifPresent(capa -> {
-//            System.out.println("target: " + capa.getTestValue());
-//            capa.setTestValue(capa.getTestValue() + 1);
-//        });
-//        pAttacker.getCapability(TEST_CAPA).ifPresent(capa -> {
-//            System.out.println("attacker: " + capa.getTestValue());
-//            capa.setTestValue(capa.getTestValue() + 1);
-//        });
         pTarget.getCapability(FV_CAPA).ifPresent(capa -> {
+            capa.setTimelock((short) 40);
             System.out.println("bkb  " + capa.getBkbNumber());
             System.out.println("stun " + capa.getStunNumber());
         });

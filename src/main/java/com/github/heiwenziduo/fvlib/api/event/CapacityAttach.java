@@ -23,16 +23,11 @@ public class CapacityAttach {
     @SubscribeEvent
     static void onAttachCapacity(AttachCapabilitiesEvent<Entity> event) {
         if (event.getObject() instanceof LivingEntity living) {
-            // 在两端触发 (?)
+            // 在两端触发
             System.out.println("onAttachCapacity/////////////////////////////////" + living.getClass());
             System.out.println("client?  " + living.level().isClientSide);
-//            System.out.println(TEST_CAPA.isRegistered());
-//            if (!living.getCapability(TEST_CAPA).isPresent()) {
-//                System.out.println("attach capa");
-//                event.addCapability(TEST_CAPA_RESOURCE, new TestCapacityProvider(living));
-//            }
-
             System.out.println("isRegistered?    " + FV_CAPA.isRegistered());
+
             if (!living.getCapability(FV_CAPA).isPresent()) {
                 event.addCapability(FV_CAPA_RESOURCE, new FvCapabilitiesProvider(living));
             }
