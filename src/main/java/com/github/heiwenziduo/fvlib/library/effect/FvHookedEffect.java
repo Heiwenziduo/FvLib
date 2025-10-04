@@ -18,7 +18,7 @@ public class FvHookedEffect extends MobEffect implements EffectDispelledHook {
     private final boolean isPierceImmunity;
     private final DispelType canDispel;
 
-    /// 默认增益无视技能免疫
+    /// 默认增益效果无视技能免疫
     public FvHookedEffect(MobEffectCategory pCategory, int pColor, DispelType canDispel) {
         this(pCategory, pColor, canDispel, pCategory == MobEffectCategory.BENEFICIAL);
     }

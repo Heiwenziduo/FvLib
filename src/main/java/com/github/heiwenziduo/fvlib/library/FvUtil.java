@@ -15,7 +15,9 @@ import net.minecraft.world.entity.LivingEntity;
 
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
+import java.util.concurrent.atomic.AtomicBoolean;
 
+import static com.github.heiwenziduo.fvlib.api.capability.FvCapabilitiesProvider.FV_CAPA;
 import static com.github.heiwenziduo.fvlib.library.registry.FvDamageType.PURE;
 
 /**
@@ -42,7 +44,12 @@ public class FvUtil {
 
     /// check if a living has any BKB effects
     public static boolean hasBKB(LivingEntity living) {
-        return ((LivingEntityMixinAPI) living).FvLib$getBKBEffectManager().hasBKB();
+        //return ((LivingEntityMixinAPI) living).FvLib$getBKBEffectManager().hasBKB();
+        AtomicBoolean haveBKB = new AtomicBoolean(false);
+        living.getCapability(FV_CAPA).ifPresent(capa -> {
+            haveBKB.set(capa.haveBKB());
+        });
+        return haveBKB.get();
     }
 
     /// Damage Type: &nbsp;<span style="color: ff2556;">PHYSIC</span>

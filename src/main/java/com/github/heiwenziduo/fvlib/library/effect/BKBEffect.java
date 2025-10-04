@@ -1,14 +1,17 @@
 package com.github.heiwenziduo.fvlib.library.effect;
 
+import com.github.heiwenziduo.fvlib.api.capability.FvCapabilities;
 import com.github.heiwenziduo.fvlib.library.api.DispelType;
 import com.github.heiwenziduo.fvlib.library.effect.hook.EffectAddedHook;
+import com.github.heiwenziduo.fvlib.library.effect.hook.EffectDispelledHook;
+import com.github.heiwenziduo.fvlib.library.effect.hook.EffectExpiredHook;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.event.entity.living.MobEffectEvent;
 
+import static com.github.heiwenziduo.fvlib.api.capability.FvCapabilitiesProvider.FV_CAPA;
 import static com.github.heiwenziduo.fvlib.library.FvUtil.dispel;
 import static com.github.heiwenziduo.fvlib.library.registry.FvAttribute.MAGIC_RESISTANCE;
-import static com.github.heiwenziduo.fvlib.util.FvUtilInternal.setBKB;
 import static net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation.ADDITION;
 import static net.minecraft.world.entity.ai.attributes.Attributes.KNOCKBACK_RESISTANCE;
 
@@ -16,7 +19,7 @@ import static net.minecraft.world.entity.ai.attributes.Attributes.KNOCKBACK_RESI
  * *godlike appearance, knockback resistance, magic resistance, dispel once enact, and spell immunity<br/><br/>
  * 生效期间阻止负面效果见{@link com.github.heiwenziduo.fvlib.mixin.LivingEntityMixin#affectEffectWhenBKB}
  */
-public class BKBEffect extends FvHookedEffect implements EffectAddedHook {
+public class BKBEffect extends FvHookedEffect implements EffectAddedHook, EffectDispelledHook, EffectExpiredHook {
     public static final float KnockbackResistance = 1f;
     public static final float MagicResistance = 0.5f;
 
@@ -34,18 +37,18 @@ public class BKBEffect extends FvHookedEffect implements EffectAddedHook {
         // 激活时施加一次弱驱散
         LivingEntity living = event.getEntity();
         dispel(living, DispelType.BASIC);
-        setBKB(living, true);
+        event.getEntity().getCapability(FV_CAPA).ifPresent(FvCapabilities::getBKBEffect);
     }
 
-    /// effect do this tick <br/> 其他带有魔免的效果应继承这一方法
     @Override
-    public void applyEffectTick(LivingEntity pLivingEntity, int pAmplifier) {
-        setBKB(pLivingEntity, true);
+    public void onEffectDispelled(MobEffectEvent.Remove event) {
+        super.onEffectDispelled(event);
+        if (!event.isCanceled())
+            event.getEntity().getCapability(FV_CAPA).ifPresent(FvCapabilities::loseBKBEffect);
     }
 
-    /// @return whether effect will do #applyEffectTick this tick
     @Override
-    public boolean isDurationEffectTick(int pDuration, int pAmplifier) {
-        return true;
+    public void onEffectExpired(MobEffectEvent.Expired event) {
+        event.getEntity().getCapability(FV_CAPA).ifPresent(FvCapabilities::loseBKBEffect);
     }
 }

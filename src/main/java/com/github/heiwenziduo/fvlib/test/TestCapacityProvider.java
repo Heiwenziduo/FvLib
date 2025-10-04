@@ -14,7 +14,7 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * 创建Capacity步骤<br><br>
- * {@link TestCapacity}定义具体属性, 并在{@link com.github.heiwenziduo.fvlib.api.event.CapacityRegistry}注册<br><br>
+ * {@link TestCapacity}定义具体属性, 并用@AutoRegisterCapability类注解注册<br><br>
  * {@link TestCapacityProvider#TEST_CAPA}Capability注册类, {@link TestCapacityProvider}负责创建和提供Capability的实例, 处理数据的序列化和反序列化,
  * 之后在{@link com.github.heiwenziduo.fvlib.api.event.CapacityAttach}登录capa到实体上
  */

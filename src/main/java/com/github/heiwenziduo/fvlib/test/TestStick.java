@@ -11,6 +11,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
 
+import static com.github.heiwenziduo.fvlib.api.capability.FvCapabilitiesProvider.FV_CAPA;
 import static com.github.heiwenziduo.fvlib.test.TestCapacityProvider.TEST_CAPA;
 
 public class TestStick extends Item {
@@ -18,18 +19,24 @@ public class TestStick extends Item {
         super(pProperties);
     }
 
+    //only in server
     @Override
     public boolean hurtEnemy(ItemStack pStack, LivingEntity pTarget, LivingEntity pAttacker) {
-        FvUtil.setTimeLock(pTarget, 100);
-        System.out.println("set someone in time-lock");
+        //FvUtil.setTimeLock(pTarget, 100);
+//        System.out.println("set someone in time-lock");
+
         System.out.println("testCapa:=============================");
-        pTarget.getCapability(TEST_CAPA).ifPresent(capa -> {
-            System.out.println("target: " + capa.getTestValue());
-            capa.setTestValue(capa.getTestValue() + 1);
-        });
-        pAttacker.getCapability(TEST_CAPA).ifPresent(capa -> {
-            System.out.println("attacker: " + capa.getTestValue());
-            capa.setTestValue(capa.getTestValue() + 1);
+//        pTarget.getCapability(TEST_CAPA).ifPresent(capa -> {
+//            System.out.println("target: " + capa.getTestValue());
+//            capa.setTestValue(capa.getTestValue() + 1);
+//        });
+//        pAttacker.getCapability(TEST_CAPA).ifPresent(capa -> {
+//            System.out.println("attacker: " + capa.getTestValue());
+//            capa.setTestValue(capa.getTestValue() + 1);
+//        });
+        pTarget.getCapability(FV_CAPA).ifPresent(capa -> {
+            System.out.println("bkb  " + capa.getBkbNumber());
+            System.out.println("stun " + capa.getStunNumber());
         });
         return false;
     }

@@ -1,10 +1,10 @@
 package com.github.heiwenziduo.fvlib.mixin;
 
 import com.github.heiwenziduo.fvlib.api.event.FvEventHooks;
-import com.github.heiwenziduo.fvlib.api.manager.BKBEffectManager;
 import com.github.heiwenziduo.fvlib.api.manager.TimeLockManager;
 import com.github.heiwenziduo.fvlib.api.mixin.LivingEntityMixinAPI;
 import com.github.heiwenziduo.fvlib.library.effect.FvHookedEffect;
+import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -25,6 +25,8 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -35,6 +37,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import static com.github.heiwenziduo.fvlib.api.capability.FvCapabilitiesProvider.FV_CAPA;
 import static com.github.heiwenziduo.fvlib.library.registry.FvAttribute.*;
 import static com.github.heiwenziduo.fvlib.library.registry.FvDamageType.PURE;
 
@@ -78,17 +81,13 @@ public abstract class LivingEntityMixin extends Entity implements LivingEntityMi
     @Shadow public abstract boolean hasEffect(MobEffect pEffect);
     @Shadow public abstract void heal(float pHealAmount);
     @Shadow @javax.annotation.Nullable public abstract MobEffectInstance getEffect(MobEffect pEffect);
+    @Shadow public abstract <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing);
 
     @Unique
     private static final EntityDataAccessor<Integer> DATA_TIME_LOCK = SynchedEntityData.defineId(LivingEntity.class, EntityDataSerializers.INT);
-    @Unique
-    private static final EntityDataAccessor<Boolean> DATA_BKB_EFFECT = SynchedEntityData.defineId(LivingEntity.class, EntityDataSerializers.BOOLEAN);
 
     @Unique
     protected TimeLockManager FvLib$timeLockManager = new TimeLockManager();
-
-    @Unique
-    protected BKBEffectManager FvLib$BKBEffectManager = new BKBEffectManager();
 
 
     @Unique
@@ -97,11 +96,6 @@ public abstract class LivingEntityMixin extends Entity implements LivingEntityMi
         return FvLib$timeLockManager;
     }
 
-    @Unique
-    @Override
-    public BKBEffectManager FvLib$getBKBEffectManager() {
-        return FvLib$BKBEffectManager;
-    }
 
     @Inject(method = "createLivingAttributes", at = @At("RETURN"), cancellable = true)
     private static void moreLivingAttributes(CallbackInfoReturnable<AttributeSupplier.Builder> cir) {
@@ -111,7 +105,6 @@ public abstract class LivingEntityMixin extends Entity implements LivingEntityMi
     @Inject(method = "defineSynchedData", at = @At("HEAD"))
     public void defineSynchedData(CallbackInfo ci) {
         entityData.define(DATA_TIME_LOCK, 0);
-        entityData.define(DATA_BKB_EFFECT, false);
     }
 
     /// 被时间锁定的活物不能行动
@@ -120,13 +113,10 @@ public abstract class LivingEntityMixin extends Entity implements LivingEntityMi
         if (!level().isClientSide) {
             // 服务端发起同步
             entityData.set(DATA_TIME_LOCK, FvLib$timeLockManager.getTimeLock());
-            entityData.set(DATA_BKB_EFFECT, FvLib$BKBEffectManager.hasBKB());
         } else {
             // 客户端接收同步的数据
             int timeLockSync = entityData.get(DATA_TIME_LOCK);
-            boolean bkbSync = entityData.get(DATA_BKB_EFFECT);
             FvLib$timeLockManager.setTimeLock(timeLockSync);
-            FvLib$BKBEffectManager.setBKB(bkbSync);
         }
 
 
@@ -136,7 +126,6 @@ public abstract class LivingEntityMixin extends Entity implements LivingEntityMi
         FvLib$handleStun(ci);
         FvLib$handleHex();
 
-        FvLib$BKBEffectManager.setBKB(false); /// 执行位置在{@link LivingEntity#tickEffects}之前
     }
 
     /// 纯粹伤害不会被减免
@@ -180,15 +169,18 @@ public abstract class LivingEntityMixin extends Entity implements LivingEntityMi
     public void affectEffectWhenBKB(MobEffectInstance pEffectInstance, CallbackInfoReturnable<Boolean> cir) {
         MobEffect toApply = pEffectInstance.getEffect();
         if (toApply.getCategory() != MobEffectCategory.HARMFUL) return;
-        //System.out.println("affectEffectWhenBKBClient: " + level().isClientSide + "   bkb? " + entityData.get(DATA_BKB_EFFECT)); // 有BKB时都是服务端, 无BKB时两端都有 ?
+        // System.out.println("affectEffectWhenBKBClient: " + level().isClientSide + "   bkb? " + entityData.get(DATA_BKB_EFFECT)); // 有BKB时都是服务端, 无BKB时两端都有 ?
 
-        if (FvLib$BKBEffectManager.hasBKB()) {
-            // 默认所有传统效果都是不无视魔免的
-            if (toApply instanceof FvHookedEffect hooked) {
-                if (hooked.isPierceImmunity()) return; // 无视魔免的效果仍可施加
-                cir.setReturnValue(false);
-            } else cir.setReturnValue(false);
-        }
+        getCapability(FV_CAPA).ifPresent(capa -> {
+            if (capa.haveBKB()) {
+                // System.out.println("haveBKB    client?" + level().isClientSide + "///////"); // client always false
+                // 默认所有传统效果都是不无视魔免的
+                if (toApply instanceof FvHookedEffect hooked) {
+                    if (hooked.isPierceImmunity()) return; // 无视魔免的效果仍可施加
+                    cir.setReturnValue(false);
+                } else cir.setReturnValue(false);
+            }
+        });
     }
 
 

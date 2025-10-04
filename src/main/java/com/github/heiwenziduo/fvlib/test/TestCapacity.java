@@ -2,7 +2,9 @@ package com.github.heiwenziduo.fvlib.test;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraftforge.common.capabilities.AutoRegisterCapability;
 
+//@AutoRegisterCapability
 public class TestCapacity {
     public TestCapacity(LivingEntity entity){}
 
